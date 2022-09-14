@@ -47,6 +47,13 @@ public final class GdxGameUtils {
         }
     }
 
+    public static <L extends MapLayer> L getLayerByName(Map map, String name) {
+        MapLayer layer = map.getLayers().get(name);
+
+        if(layer == null) throw new NoSuchElementException("Map has no layer with name: " + name);
+        return (L) layer;
+    }
+
     public static Rectangle moveRectangleAtTileCenter(TiledMapTileLayer tileLayer, Rectangle rectangle, GridPoint2 tileCoordinates) {
         Vector2 tileCenter = calculateTileCenter(tileLayer, tileCoordinates);
         return rectangle.setCenter(tileCenter);

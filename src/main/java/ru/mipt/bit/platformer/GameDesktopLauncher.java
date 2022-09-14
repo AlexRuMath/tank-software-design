@@ -15,6 +15,7 @@ import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.math.GridPoint2;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.Rectangle;
+import ru.mipt.bit.platformer.entity.Level;
 import ru.mipt.bit.platformer.util.TileMovement;
 
 import static com.badlogic.gdx.Input.Keys.*;
@@ -25,6 +26,8 @@ import static ru.mipt.bit.platformer.util.GdxGameUtils.*;
 public class GameDesktopLauncher implements ApplicationListener {
 
     private static final float MOVEMENT_SPEED = 0.4f;
+
+    private Level Level = ru.mipt.bit.platformer.entity.Level.getInstance();
 
     private Batch batch;
 
@@ -51,27 +54,28 @@ public class GameDesktopLauncher implements ApplicationListener {
     public void create() {
         batch = new SpriteBatch();
 
-        // load level tiles
-        level = new TmxMapLoader().load("level.tmx");
-        levelRenderer = createSingleLayerMapRenderer(level, batch);
-        TiledMapTileLayer groundLayer = getSingleLayer(level);
-        tileMovement = new TileMovement(groundLayer, Interpolation.smooth);
+        Level.setLevelScheme("level.tmx");
+        Level.setLevelRender(batch);
+        Level.addLayerMovement("Ground", Interpolation.smooth);
 
-        // Texture decodes an image file and loads it into GPU memory, it represents a native resource
+
+        //PLAYER
         blueTankTexture = new Texture("images/tank_blue.png");
-        // TextureRegion represents Texture portion, there may be many TextureRegion instances of the same Texture
         playerGraphics = new TextureRegion(blueTankTexture);
         playerRectangle = createBoundingRectangle(playerGraphics);
-        // set player initial position
         playerDestinationCoordinates = new GridPoint2(1, 1);
         playerCoordinates = new GridPoint2(playerDestinationCoordinates);
         playerRotation = 0f;
+        //PLAYER
 
+        //TREE
         greenTreeTexture = new Texture("images/greenTree.png");
         treeObstacleGraphics = new TextureRegion(greenTreeTexture);
         treeObstacleCoordinates = new GridPoint2(1, 3);
         treeObstacleRectangle = createBoundingRectangle(treeObstacleGraphics);
+        TiledMapTileLayer groundLayer = getSingleLayer(Level.tiledMap);
         moveRectangleAtTileCenter(groundLayer, treeObstacleRectangle, treeObstacleCoordinates);
+        //TREE
     }
 
     @Override
@@ -122,7 +126,8 @@ public class GameDesktopLauncher implements ApplicationListener {
         }
 
         // calculate interpolated player screen coordinates
-        tileMovement.moveRectangleBetweenTileCenters(playerRectangle, playerCoordinates, playerDestinationCoordinates, playerMovementProgress);
+        //tileMovement.moveRectangleBetweenTileCenters(playerRectangle, playerCoordinates, playerDestinationCoordinates, playerMovementProgress);
+        Level.mapMovements.get("Ground").moveRectangleBetweenTileCenters(playerRectangle, playerCoordinates, playerDestinationCoordinates, playerMovementProgress);
 
         playerMovementProgress = continueProgress(playerMovementProgress, deltaTime, MOVEMENT_SPEED);
         if (isEqual(playerMovementProgress, 1f)) {
@@ -131,7 +136,7 @@ public class GameDesktopLauncher implements ApplicationListener {
         }
 
         // render each tile of the level
-        levelRenderer.render();
+        Level.render();
 
         // start recording all drawing commands
         batch.begin();
