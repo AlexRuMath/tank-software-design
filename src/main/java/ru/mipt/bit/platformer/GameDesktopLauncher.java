@@ -4,143 +4,96 @@ import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.math.GridPoint2;
 import com.badlogic.gdx.math.Interpolation;
-import com.badlogic.gdx.math.Rectangle;
-import ru.mipt.bit.platformer.entity.Level;
+import ru.mipt.bit.platformer.builders.ILevelObstacleBuilder;
+import ru.mipt.bit.platformer.builders.LevelObstacleBuilderDefault;
+import ru.mipt.bit.platformer.controllers.IMove;
+import ru.mipt.bit.platformer.controllers.PlayerMoveController;
+import ru.mipt.bit.platformer.entity.BaseEntity;
+import ru.mipt.bit.platformer.entity.PlayerEntity;
+import ru.mipt.bit.platformer.level.ILevelObstacle;
+import ru.mipt.bit.platformer.level.LevelRender;
 
-import static com.badlogic.gdx.Input.Keys.*;
 import static com.badlogic.gdx.graphics.GL20.GL_COLOR_BUFFER_BIT;
 import static com.badlogic.gdx.math.MathUtils.isEqual;
-import static ru.mipt.bit.platformer.util.GdxGameUtils.*;
+import static ru.mipt.bit.platformer.util.GdxGameUtils.continueProgress;
 
 public class GameDesktopLauncher implements ApplicationListener {
 
     private static final float MOVEMENT_SPEED = 0.4f;
 
-    private final Level Level = ru.mipt.bit.platformer.entity.Level.getInstance();
+    private final LevelRender LevelRender = ru.mipt.bit.platformer.level.LevelRender.getInstance();
+    private ILevelObstacle levelObstacle;
 
     private Batch batch;
 
-    private Texture blueTankTexture;
-    private TextureRegion playerGraphics;
-    private Rectangle playerRectangle;
-    // player current position coordinates on level 10x8 grid (e.g. x=0, y=1)
-    private GridPoint2 playerCoordinates;
-    // which tile the player want to go next
-    private GridPoint2 playerDestinationCoordinates;
-    private float playerMovementProgress = 1f;
-    private float playerRotation;
-
-    private Texture greenTreeTexture;
-    private TextureRegion treeObstacleGraphics;
-    private GridPoint2 treeObstacleCoordinates = new GridPoint2();
-    private Rectangle treeObstacleRectangle = new Rectangle();
+    private PlayerEntity playerEntity;
 
     @Override
     public void create() {
         batch = new SpriteBatch();
 
-        Level.setLevelScheme("level.tmx");
-        Level.setLevelRender(batch);
-        Level.addLayerMovement("Ground", Interpolation.smooth);
+        LevelRender.setLevelScheme("level.tmx");
+        LevelRender.setLayerRenderer(batch);
+        LevelRender.setLayerMovement("Ground", Interpolation.smooth);
 
+        ILevelObstacleBuilder obstacleBuilder = new LevelObstacleBuilderDefault();
+        obstacleBuilder.addTree(new GridPoint2(5, 5));
+        obstacleBuilder.addTree(new GridPoint2(2, 1));
+        obstacleBuilder.addTree(new GridPoint2(6, 2));
+        levelObstacle = obstacleBuilder.create();
 
-        //PLAYER
-        blueTankTexture = new Texture("images/tank_blue.png");
-        playerGraphics = new TextureRegion(blueTankTexture);
-        playerRectangle = createBoundingRectangle(playerGraphics);
-        playerDestinationCoordinates = new GridPoint2(1, 1);
-        playerCoordinates = new GridPoint2(playerDestinationCoordinates);
-        playerRotation = 0f;
-        //PLAYER
+        LevelRender.setObstacle(levelObstacle);
 
-        //TREE
-        greenTreeTexture = new Texture("images/greenTree.png");
-        treeObstacleGraphics = new TextureRegion(greenTreeTexture);
-        treeObstacleCoordinates = new GridPoint2(1, 3);
-        treeObstacleRectangle = createBoundingRectangle(treeObstacleGraphics);
-        TiledMapTileLayer groundLayer = getSingleLayer(Level.tiledMap);
-        moveRectangleAtTileCenter(groundLayer, treeObstacleRectangle, treeObstacleCoordinates);
-        //TREE
+        IMove playerMoveController = new PlayerMoveController();
+        playerEntity = new PlayerEntity("images/tank_blue.png", new GridPoint2(1, 1), 0f, playerMoveController);
     }
 
     @Override
     public void render() {
         // clear the screen
-        Gdx.gl.glClearColor(0f, 0f, 0.2f, 1f);
-        Gdx.gl.glClear(GL_COLOR_BUFFER_BIT);
+        clearScreen();
 
         // get time passed since the last render
-        float deltaTime = Gdx.graphics.getDeltaTime();
-
-        if (Gdx.input.isKeyPressed(UP) || Gdx.input.isKeyPressed(W)) {
-            if (isEqual(playerMovementProgress, 1f)) {
-                // check potential player destination for collision with obstacles
-                if (!treeObstacleCoordinates.equals(incrementedY(playerCoordinates))) {
-                    playerDestinationCoordinates.y++;
-                    playerMovementProgress = 0f;
-                }
-                playerRotation = 90f;
-            }
-        }
-        if (Gdx.input.isKeyPressed(LEFT) || Gdx.input.isKeyPressed(A)) {
-            if (isEqual(playerMovementProgress, 1f)) {
-                if (!treeObstacleCoordinates.equals(decrementedX(playerCoordinates))) {
-                    playerDestinationCoordinates.x--;
-                    playerMovementProgress = 0f;
-                }
-                playerRotation = -180f;
-            }
-        }
-        if (Gdx.input.isKeyPressed(DOWN) || Gdx.input.isKeyPressed(S)) {
-            if (isEqual(playerMovementProgress, 1f)) {
-                if (!treeObstacleCoordinates.equals(decrementedY(playerCoordinates))) {
-                    playerDestinationCoordinates.y--;
-                    playerMovementProgress = 0f;
-                }
-                playerRotation = -90f;
-            }
-        }
-        if (Gdx.input.isKeyPressed(RIGHT) || Gdx.input.isKeyPressed(D)) {
-            if (isEqual(playerMovementProgress, 1f)) {
-                if (!treeObstacleCoordinates.equals(incrementedX(playerCoordinates))) {
-                    playerDestinationCoordinates.x++;
-                    playerMovementProgress = 0f;
-                }
-                playerRotation = 0f;
-            }
-        }
+        playerEntity.getInput(Gdx.input, levelObstacle);
 
         // calculate interpolated player screen coordinates
-        //tileMovement.moveRectangleBetweenTileCenters(playerRectangle, playerCoordinates, playerDestinationCoordinates, playerMovementProgress);
-        Level.mapMovements.get("Ground").moveRectangleBetweenTileCenters(playerRectangle, playerCoordinates, playerDestinationCoordinates, playerMovementProgress);
-
-        playerMovementProgress = continueProgress(playerMovementProgress, deltaTime, MOVEMENT_SPEED);
-        if (isEqual(playerMovementProgress, 1f)) {
-            // record that the player has reached his/her destination
-            playerCoordinates.set(playerDestinationCoordinates);
-        }
+        movePlayer();
 
         // render each tile of the level
-        Level.render();
+        LevelRender.render();
 
         // start recording all drawing commands
         batch.begin();
 
         // render player
-        drawTextureRegionUnscaled(batch, playerGraphics, playerRectangle, playerRotation);
+        playerEntity.draw(batch);
 
-        // render tree obstacle
-        drawTextureRegionUnscaled(batch, treeObstacleGraphics, treeObstacleRectangle, 0f);
+        // render obstacle
+        for (BaseEntity entity: levelObstacle.getEntities()) entity.draw(batch);
 
         // submit all drawing requests
         batch.end();
+    }
+
+    private void movePlayer() {
+        float deltaTime = Gdx.graphics.getDeltaTime();
+
+        LevelRender.mapMovements.get("Ground").moveRectangleBetweenTileCenters(playerEntity.rectangle, playerEntity.position, playerEntity.destinitionPosition, playerEntity.movementProgress);
+
+        playerEntity.movementProgress = continueProgress(playerEntity.movementProgress, deltaTime, MOVEMENT_SPEED);
+        if (isEqual(playerEntity.movementProgress, 1f)) {
+            // record that the player has reached his/her destination
+            playerEntity.position.set(playerEntity.destinitionPosition);
+        }
+    }
+
+    private static void clearScreen() {
+        Gdx.gl.glClearColor(0f, 0f, 0.2f, 1f);
+        Gdx.gl.glClear(GL_COLOR_BUFFER_BIT);
     }
 
     @Override
@@ -161,9 +114,12 @@ public class GameDesktopLauncher implements ApplicationListener {
     @Override
     public void dispose() {
         // dispose of all the native resources (classes which implement com.badlogic.gdx.utils.Disposable)
-        greenTreeTexture.dispose();
-        blueTankTexture.dispose();
-        Level.tiledMap.dispose();
+        for (BaseEntity entity: levelObstacle.getEntities()) {
+            entity.texture.dispose();
+        }
+
+        playerEntity.texture.dispose();
+        LevelRender.tiledMap.dispose();
         batch.dispose();
     }
 
