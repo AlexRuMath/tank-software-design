@@ -1,48 +1,53 @@
-package ru.mipt.bit.platformer.entity;
+package ru.mipt.bit.platformer.level;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.maps.MapLayer;
 import com.badlogic.gdx.maps.MapRenderer;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.math.Interpolation;
+import ru.mipt.bit.platformer.entity.BaseEntity;
 import ru.mipt.bit.platformer.util.TileMovement;
 
 import java.util.HashMap;
 
-import static ru.mipt.bit.platformer.util.GdxGameUtils.createSingleLayerMapRenderer;
-import static ru.mipt.bit.platformer.util.GdxGameUtils.getLayerByName;
+import static ru.mipt.bit.platformer.util.GdxGameUtils.*;
 
-public class Level {
+public class LevelRender {
 
-    private static Level instance;
+    private static LevelRender instance;
     public TiledMap tiledMap;
     public MapRenderer levelRenderer;
-
     public HashMap<String, TileMovement> mapMovements;
 
-    private Level() {
+    private LevelRender() {
         this.mapMovements = new HashMap<>();
     }
 
-    public static Level getInstance(){
+    public static LevelRender getInstance(){
         if(instance == null){
-            instance = new Level();
+            instance = new LevelRender();
         }
         return instance;
     }
 
+    public void setObstacle(ILevelObstacle levelObstacle){
+        TiledMapTileLayer groundLayer = getSingleLayer(this.tiledMap);
+
+        for (BaseEntity entity : levelObstacle.getEntities()) {
+            moveRectangleAtTileCenter(groundLayer, entity.rectangle, entity.position);
+        }
+    }
 
     public void setLevelScheme(String pathToScheme){
         this.tiledMap = new TmxMapLoader().load(pathToScheme);
     }
 
-    public void setLevelRender(Batch batch){
+    public void setLayerRenderer(Batch batch){
         this.levelRenderer = createSingleLayerMapRenderer(this.tiledMap, batch);
     }
 
-    public void addLayerMovement(String nameLayer, Interpolation interpolation){
+    public void setLayerMovement(String nameLayer, Interpolation interpolation){
         TiledMapTileLayer layer = getLayerByName(this.tiledMap, nameLayer);
         TileMovement movement = new TileMovement(layer, interpolation);
         this.mapMovements.put(nameLayer, movement);
