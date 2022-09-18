@@ -6,7 +6,7 @@ import ru.mipt.bit.platformer.controllers.IMove;
 import ru.mipt.bit.platformer.level.ILevelObstacle;
 
 public class PlayerEntity extends BaseEntity {
-    public GridPoint2 destinitionPosition;
+    public GridPoint2 destinationPosition;
     public float movementProgress;
 
     private final IMove movement;
@@ -15,7 +15,7 @@ public class PlayerEntity extends BaseEntity {
         super(pathToTexture, position, rotation);
 
         this.movementProgress = 0f;
-        this.destinitionPosition = this.position;
+        this.destinationPosition = this.position;
         this.movement = movement;
     }
 

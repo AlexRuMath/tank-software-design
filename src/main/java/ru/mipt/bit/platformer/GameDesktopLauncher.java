@@ -82,12 +82,12 @@ public class GameDesktopLauncher implements ApplicationListener {
     private void movePlayer() {
         float deltaTime = Gdx.graphics.getDeltaTime();
 
-        LevelRender.mapMovements.get("Ground").moveRectangleBetweenTileCenters(playerEntity.rectangle, playerEntity.position, playerEntity.destinitionPosition, playerEntity.movementProgress);
+        LevelRender.mapMovements.get("Ground").moveRectangleBetweenTileCenters(playerEntity.rectangle, playerEntity.position, playerEntity.destinationPosition, playerEntity.movementProgress);
 
         playerEntity.movementProgress = continueProgress(playerEntity.movementProgress, deltaTime, MOVEMENT_SPEED);
         if (isEqual(playerEntity.movementProgress, 1f)) {
             // record that the player has reached his/her destination
-            playerEntity.position.set(playerEntity.destinitionPosition);
+            playerEntity.position.set(playerEntity.destinationPosition);
         }
     }
 

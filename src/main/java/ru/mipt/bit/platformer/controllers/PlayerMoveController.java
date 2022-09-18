@@ -13,28 +13,28 @@ public class PlayerMoveController implements IMove{
     @Override
     public void move(PlayerEntity playerEntity, Input input, ILevelObstacle levelObstacle) {
         if(!isEqual(playerEntity.movementProgress, 1f)) return;
-        GridPoint2 destinitionPos = playerEntity.position;
+        GridPoint2 destinationPosition = playerEntity.position;
 
         if (input.isKeyPressed(UP) || input.isKeyPressed(W)) {
-            destinitionPos = incrementedY(playerEntity.position);
+            destinationPosition = incrementedY(playerEntity.position);
             playerEntity.rotation = 90f;
         }
         if (input.isKeyPressed(LEFT) || input.isKeyPressed(A)) {
-            destinitionPos = decrementedX(playerEntity.position);
+            destinationPosition = decrementedX(playerEntity.position);
             playerEntity.rotation = -180f;
         }
         if (input.isKeyPressed(DOWN) || input.isKeyPressed(S)) {
-            destinitionPos = decrementedY(playerEntity.position);
+            destinationPosition = decrementedY(playerEntity.position);
             playerEntity.rotation = -90f;
         }
         if (input.isKeyPressed(RIGHT) || input.isKeyPressed(D)) {
-            destinitionPos = incrementedX(playerEntity.position);
+            destinationPosition = incrementedX(playerEntity.position);
             playerEntity.rotation = 0f;
         }
 
-        boolean isObstaclePosition = levelObstacle.getPositions().contains(destinitionPos);
+        boolean isObstaclePosition = levelObstacle.getPositions().contains(destinationPosition);
         if (!isObstaclePosition) {
-            playerEntity.destinitionPosition = destinitionPos;
+            playerEntity.destinationPosition = destinationPosition;
             playerEntity.movementProgress = 0f;
         }
     }
