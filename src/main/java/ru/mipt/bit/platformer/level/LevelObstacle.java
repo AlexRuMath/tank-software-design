@@ -16,12 +16,12 @@ public class LevelObstacle implements ILevelObstacle {
 
     public void addObstacle(BaseEntity entity) {
         obstacleSet.add(entity);
-        obstaclePositionSet.add(entity.position);
+        obstaclePositionSet.add(entity.transform.getPosition());
     }
 
     public void removeObstacle(BaseEntity entity) {
         obstacleSet.remove(entity);
-        obstaclePositionSet.remove(entity.position);
+        obstaclePositionSet.remove(entity.transform.getPosition());
     }
 
     public HashSet<GridPoint2> getPositions(){

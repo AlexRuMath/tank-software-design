@@ -1,6 +1,8 @@
 package ru.mipt.bit.platformer.builders;
 
 import com.badlogic.gdx.math.GridPoint2;
+import ru.mipt.bit.platformer.entity.ModelTexture;
+import ru.mipt.bit.platformer.util.Transform;
 import ru.mipt.bit.platformer.entity.TreeEntity;
 import ru.mipt.bit.platformer.level.ILevelObstacle;
 import ru.mipt.bit.platformer.level.LevelObstacle;
@@ -15,7 +17,9 @@ public class LevelObstacleBuilderDefault implements ILevelObstacleBuilder {
 
     @Override
     public ILevelObstacleBuilder addTree(GridPoint2 position) {
-        TreeEntity tree = new TreeEntity("images/greenTree.png", position, 0f);
+        ModelTexture treeTexture = new ModelTexture("images/greenTree.png");
+        Transform treeTransform = new Transform(position, 0f);
+        TreeEntity tree = new TreeEntity(treeTransform, treeTexture);
 
         this.levelObstacle.addObstacle(tree);
         return this;

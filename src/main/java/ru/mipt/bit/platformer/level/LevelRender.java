@@ -35,7 +35,7 @@ public class LevelRender {
         TiledMapTileLayer groundLayer = getSingleLayer(this.tiledMap);
 
         for (BaseEntity entity : levelObstacle.getEntities()) {
-            moveRectangleAtTileCenter(groundLayer, entity.rectangle, entity.position);
+            moveRectangleAtTileCenter(groundLayer, entity.modelTexture.getRectangle(), entity.transform.getPosition());
         }
     }
 
