@@ -13,6 +13,12 @@ public class TankEntity extends BaseEntity implements IMoveEntity {
         this.destinationTransform = transform;
     }
 
+    public TankEntity(Transform transform) {
+        super(transform);
+        this.movementProgress = 0f;
+        this.destinationTransform = transform;
+    }
+
     public void setDestinationTransform(Transform transform) {
         this.destinationTransform = transform;
         this.transform.setRotation(transform.getRotation());
@@ -40,7 +46,8 @@ public class TankEntity extends BaseEntity implements IMoveEntity {
 
     public void setMovementProgress(float movementProgress) {
         if(movementProgress > 1f || movementProgress < 0f)
-            throw new IllegalArgumentException("The movement progress does not belong to segment [0;1]: " + movementProgress);
+            throw new IllegalArgumentException("The movement progress does not belong to segment [0;1]: "
+                                                + movementProgress);
 
         this.movementProgress = movementProgress;
     }
