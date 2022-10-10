@@ -53,6 +53,14 @@ public class LevelRender {
         this.mapMovements.put(nameLayer, movement);
     }
 
+    public int getHeight(){
+        return (int)this.tiledMap.getProperties().get("height");
+    }
+
+    public int getWidth(){
+        return (int)this.tiledMap.getProperties().get("width");
+    }
+
     public void render(){
         this.levelRenderer.render();
     }
