@@ -6,12 +6,12 @@ public class Transform {
     private GridPoint2 position;
     private float rotation;
 
-    public Transform(GridPoint2 position, float rotation){
+    public Transform(GridPoint2 position, float rotation) {
         this.position = position;
         this.rotation = rotation;
     }
 
-    public void copyFromTransform(Transform transform){
+    public void copyFromTransform(Transform transform) {
         this.position = new GridPoint2(transform.getPosition());
         this.rotation = transform.getRotation();
     }

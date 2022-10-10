@@ -6,15 +6,17 @@ import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.GridPoint2;
 import com.badlogic.gdx.math.Interpolation;
-import ru.mipt.bit.platformer.builders.ILevelObstacleBuilder;
-import ru.mipt.bit.platformer.builders.LevelObstacleBuilderDefault;
+import ru.mipt.bit.platformer.directors.LevelFromFile;
 import ru.mipt.bit.platformer.controllers.IMoveController;
 import ru.mipt.bit.platformer.controllers.DirectionMoveController;
 import ru.mipt.bit.platformer.entity.*;
+import ru.mipt.bit.platformer.level.IFillLevel;
 import ru.mipt.bit.platformer.level.ILevelObstacle;
 import ru.mipt.bit.platformer.level.LevelRender;
+import ru.mipt.bit.platformer.parser.IParser;
+import ru.mipt.bit.platformer.parser.ParseResult;
+import ru.mipt.bit.platformer.parser.TxtParserLevel;
 import ru.mipt.bit.platformer.util.Direction;
 import ru.mipt.bit.platformer.util.Transform;
 
@@ -37,6 +39,8 @@ public class GameDesktopLauncher implements ApplicationListener {
 
     private ILevelObstacle levelObstacle;
 
+    private IFillLevel fillLevel;
+
 
     @Override
     public void create() {
@@ -46,16 +50,16 @@ public class GameDesktopLauncher implements ApplicationListener {
         LevelRender.setLayerRenderer(batch);
         LevelRender.setLayerMovement("Ground", Interpolation.smooth);
 
-        ILevelObstacleBuilder obstacleBuilder = new LevelObstacleBuilderDefault();
-        obstacleBuilder.addTree(new GridPoint2(5, 5));
-        obstacleBuilder.addTree(new GridPoint2(2, 1));
-        obstacleBuilder.addTree(new GridPoint2(6, 2));
-        levelObstacle = obstacleBuilder.create();
+        IParser parser = new TxtParserLevel(LevelRender.getWidth(), LevelRender.getHeight());
+        ParseResult parseResult = parser.parse("src/main/resources/positions.txt");
 
+        fillLevel = new LevelFromFile(parseResult);
+                  //new RandomLevel(LevelRender.getWidth(), LevelRender.getHeight());
+        levelObstacle = fillLevel.fill();
         LevelRender.setObstacle(levelObstacle);
 
         ModelTexture tankTexture = new ModelTexture("images/tank_blue.png");
-        Transform tankTransform = new Transform(new GridPoint2(1, 1), 0f);
+        Transform tankTransform = new Transform(fillLevel.getPlayerPosition(), 0f);
         tankEntity = new TankEntity(tankTransform, tankTexture);
         directionController = new DirectionMoveController();
     }
@@ -77,16 +81,12 @@ public class GameDesktopLauncher implements ApplicationListener {
 
         interpolatedPosition(deltaTime);
 
-        // render each tile of the level
         LevelRender.render();
 
-        // start recording all drawing commands
         batch.begin();
 
-        // render player
         drawModel(tankEntity.modelTexture, tankEntity.transform);
 
-        // render obstacle
         for (BaseEntity entity : levelObstacle.getEntities()) drawModel(entity.modelTexture, entity.transform);
 
         // submit all drawing requests
