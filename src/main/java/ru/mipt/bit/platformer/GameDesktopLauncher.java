@@ -68,7 +68,9 @@ public class GameDesktopLauncher implements ApplicationListener {
 
         Direction direction = directionController.getDirection(Gdx.input);
 
-        calculateDestinationPosition(tankEntity, direction);
+        if(direction != null) {
+            calculateDestinationPosition(tankEntity, direction);
+        }
 
         LevelRender.mapMovements.get("Ground")
                 .moveRectangleBetweenTileCenters(tankEntity.modelTexture.getRectangle(), tankEntity);
