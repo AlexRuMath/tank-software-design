@@ -7,12 +7,6 @@ public class TankEntity extends BaseEntity implements IMoveEntity {
 
     private float movementProgress;
 
-    public TankEntity(Transform transform, ModelTexture modelTexture) {
-        super(transform, modelTexture);
-        this.movementProgress = 0f;
-        this.destinationTransform = transform;
-    }
-
     public TankEntity(Transform transform) {
         super(transform);
         this.movementProgress = 0f;

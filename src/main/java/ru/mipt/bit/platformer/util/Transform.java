@@ -11,6 +11,11 @@ public class Transform {
         this.rotation = rotation;
     }
 
+    public Transform(GridPoint2 position) {
+        this.position = position;
+        this.rotation = 0f;
+    }
+
     public void copyFromTransform(Transform transform) {
         this.position = new GridPoint2(transform.getPosition());
         this.rotation = transform.getRotation();
