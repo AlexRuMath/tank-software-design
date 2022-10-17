@@ -11,6 +11,10 @@ import java.util.Map;
 public class ParseResult {
     private Map<Type, List<Transform>> value = new HashMap<>();
 
+    private Transform position;
+
+    public int width, height;
+
     public Transform addToList(Type key, Transform transform){
         if(!this.value.containsKey(key)){
             this.value.put(key, new ArrayList<Transform>());
@@ -28,6 +32,13 @@ public class ParseResult {
 
         return this.value.get(key);
     }
+
+    public void setPosition(Transform position){
+        this.position = position;
+    }
+
+
+    public Transform getPosition(){ return this.position; }
 
     public List<Transform> getList(Type key){
         return this.value.get(key);
