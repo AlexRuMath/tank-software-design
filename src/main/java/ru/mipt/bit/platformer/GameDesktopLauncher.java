@@ -6,19 +6,23 @@ import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.GridPoint2;
 import com.badlogic.gdx.math.Interpolation;
-import ru.mipt.bit.platformer.directors.LevelFromFile;
+import ru.mipt.bit.platformer.gameobjects.IGameObject;
+import ru.mipt.bit.platformer.generators.LevelDataFromFile;
 import ru.mipt.bit.platformer.controllers.IMoveController;
 import ru.mipt.bit.platformer.controllers.DirectionMoveController;
 import ru.mipt.bit.platformer.entity.*;
-import ru.mipt.bit.platformer.level.IFillLevel;
-import ru.mipt.bit.platformer.level.ILevelObstacle;
+import ru.mipt.bit.platformer.level.DTO.IDataLevel;
+import ru.mipt.bit.platformer.level.Level;
 import ru.mipt.bit.platformer.level.LevelRender;
 import ru.mipt.bit.platformer.parser.IParser;
 import ru.mipt.bit.platformer.parser.ParseResult;
-import ru.mipt.bit.platformer.parser.TxtParserLevel;
+import ru.mipt.bit.platformer.parser.ParserLevelFromTxt;
 import ru.mipt.bit.platformer.util.Direction;
 import ru.mipt.bit.platformer.util.Transform;
+
+import java.util.Random;
 
 import static com.badlogic.gdx.graphics.GL20.GL_COLOR_BUFFER_BIT;
 import static com.badlogic.gdx.math.MathUtils.isEqual;
@@ -33,14 +37,9 @@ public class GameDesktopLauncher implements ApplicationListener {
 
     private Batch batch;
 
-    private TankEntity tankEntity;
-
     private IMoveController directionController;
 
-    private ILevelObstacle levelObstacle;
-
-    private IFillLevel fillLevel;
-
+    private Level level;
 
     @Override
     public void create() {
@@ -50,17 +49,13 @@ public class GameDesktopLauncher implements ApplicationListener {
         LevelRender.setLayerRenderer(batch);
         LevelRender.setLayerMovement("Ground", Interpolation.smooth);
 
-        IParser parser = new TxtParserLevel(LevelRender.getWidth(), LevelRender.getHeight());
+        IParser parser = new ParserLevelFromTxt(LevelRender.getWidth(), LevelRender.getHeight());
         ParseResult parseResult = parser.parse("src/main/resources/positions.txt");
 
-        fillLevel = new LevelFromFile(parseResult);
-                  //new RandomLevel(LevelRender.getWidth(), LevelRender.getHeight());
-        levelObstacle = fillLevel.fill();
-        LevelRender.setObstacle(levelObstacle);
+        IDataLevel dataLevel = new LevelDataFromFile(parseResult);
+        level = dataLevel.createLevel();
+        LevelRender.setObstacle(level.levelObstacle);
 
-        ModelTexture tankTexture = new ModelTexture("images/tank_blue.png");
-        Transform tankTransform = new Transform(fillLevel.getPlayerPosition(), 0f);
-        tankEntity = new TankEntity(tankTransform, tankTexture);
         directionController = new DirectionMoveController();
     }
 
@@ -72,47 +67,80 @@ public class GameDesktopLauncher implements ApplicationListener {
 
         Direction direction = directionController.getDirection(Gdx.input);
 
-        if(direction != null) {
-            calculateDestinationPosition(tankEntity, direction);
+        if (direction != null) {
+            calculateDestinationPosition(this.level.playerTank.entity, direction);
         }
 
-        LevelRender.mapMovements.get("Ground")
-                .moveRectangleBetweenTileCenters(tankEntity.modelTexture.getRectangle(), tankEntity);
+        movingTank(level.playerTank, deltaTime);
 
-        interpolatedPosition(deltaTime);
+
+        for (IGameObject tank : this.level.levelTanks.getGameObjects()) {
+            Direction randomDirection = Direction.getRandom();
+
+            if (randomDirection != null) {
+                calculateDestinationPosition((TankEntity) tank.getEntity(), randomDirection);
+            }
+
+            movingTank(tank, deltaTime);
+        }
 
         LevelRender.render();
 
         batch.begin();
 
-        drawModel(tankEntity.modelTexture, tankEntity.transform);
+        drawModel(this.level.playerTank);
 
-        for (BaseEntity entity : levelObstacle.getEntities()) drawModel(entity.modelTexture, entity.transform);
+        for (IGameObject gameObject : level.levelObstacle.getGameObjects()) {
+            drawModel(gameObject);
+        }
 
-        // submit all drawing requests
+        for (IGameObject gameObject : level.levelTanks.getGameObjects()) {
+            drawModel(gameObject);
+        }
+
         batch.end();
+    }
+
+    private void movingTank(IGameObject gameObject, float deltaTime) {
+        ModelTexture texture = gameObject.getModelTexture();
+        TankEntity tankEntity = (TankEntity) gameObject.getEntity();
+
+        LevelRender.mapMovements.get("Ground")
+                .moveRectangleBetweenTileCenters(texture.getRectangle(), tankEntity);
+        interpolatedPosition(tankEntity, deltaTime);
     }
 
     private void calculateDestinationPosition(IMoveEntity moveEntity, Direction direction) {
         if (!isEqual(moveEntity.getMovementProgress(), 1f)) return;
 
         Transform newTransform = direction.stepInTheDirection(moveEntity.getTransform());
-        boolean isObstaclePosition = levelObstacle.getPositions().contains(newTransform.getPosition());
+        GridPoint2 position = newTransform.getPosition();
 
-        if (!isObstaclePosition) {
+        boolean isObstaclePosition = level.levelObstacle.getPositions().contains(position);
+        boolean isEndLevel = (position.x >= level.width) ||
+                (position.x < 0) ||
+                (position.y < 0) ||
+                (position.y >= level.height);
+
+        if (!isObstaclePosition && !isEndLevel) {
             moveEntity.setDestinationTransform(newTransform);
         }
     }
 
-    private void drawModel(ModelTexture graphic, Transform transform) {
-        drawTextureRegionUnscaled(batch, graphic.getTextureRegion(), graphic.getRectangle(), transform.getRotation());
+    private void drawModel(IGameObject gameObject) {
+        ModelTexture texture = gameObject.getModelTexture();
+        Transform transform = gameObject.getEntity().transform;
+
+        drawTextureRegionUnscaled(batch, texture.getTextureRegion(),
+                texture.getRectangle(),
+                transform.getRotation());
     }
 
-    private void interpolatedPosition(float deltaTime) {
-        float newProgress = continueProgress(tankEntity.getMovementProgress(), deltaTime, MOVEMENT_SPEED);
-        tankEntity.setMovementProgress(newProgress);
-        if (isEqual(tankEntity.getMovementProgress(), 1f)) {
-            tankEntity.setDestinationPositionAsPosition();
+    private void interpolatedPosition(TankEntity entity, float deltaTime) {
+        float newProgress = continueProgress(entity.getMovementProgress(), deltaTime, MOVEMENT_SPEED);
+        entity.setMovementProgress(newProgress);
+        if (isEqual(entity.getMovementProgress(), 1f)) {
+            entity.setDestinationPositionAsPosition();
         }
     }
 
@@ -139,11 +167,15 @@ public class GameDesktopLauncher implements ApplicationListener {
     @Override
     public void dispose() {
         // dispose of all the native resources (classes which implement com.badlogic.gdx.utils.Disposable)
-        for (BaseEntity entity : levelObstacle.getEntities()) {
-            entity.modelTexture.getTexture().dispose();
+        for (IGameObject gameObject : level.levelObstacle.getGameObjects()) {
+            gameObject.getModelTexture().getTexture().dispose();
+        }
+        for (IGameObject gameObject : level.levelObstacle.getGameObjects()) {
+            gameObject.getModelTexture().getTexture().dispose();
         }
 
-        tankEntity.modelTexture.getTexture().dispose();
+
+        this.level.playerTank.texture.getTexture().dispose();
         LevelRender.tiledMap.dispose();
         batch.dispose();
     }
