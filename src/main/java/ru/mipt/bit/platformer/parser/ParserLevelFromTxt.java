@@ -11,15 +11,16 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TxtParserLevel implements IParser {
+public class ParserLevelFromTxt implements IParser {
 
     private List<Transform> tankPositions = new ArrayList<>();
     private List<Transform> treePositions = new ArrayList<>();
+    private Transform playerPosition;
 
     private int height = 0;
     private int width = 0;
 
-    public TxtParserLevel(int width, int height){
+    public ParserLevelFromTxt(int width, int height){
         this.height = height;
         this.width = width;
     }
@@ -27,6 +28,8 @@ public class TxtParserLevel implements IParser {
     @Override
     public ParseResult parse(String pathToFile) {
         ParseResult result = new ParseResult();
+        result.width = this.width;
+        result.height = this.height;
         try {
             FileReader fileReader = new FileReader(pathToFile);
             BufferedReader bufferedReader = new BufferedReader(fileReader);
@@ -34,6 +37,7 @@ public class TxtParserLevel implements IParser {
 
             result.addList(TankEntity.class, this.tankPositions);
             result.addList(TreeEntity.class, this.treePositions);
+            result.setPosition(this.playerPosition);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -58,6 +62,9 @@ public class TxtParserLevel implements IParser {
                     case 'X':
                         transform = this.parsePosition(x, y);
                         tankPositions.add(transform);
+                    case 'P':
+                        playerPosition = this.parsePosition(x, y);
+                        break;
                 }
             }
             line = reader.readLine();
