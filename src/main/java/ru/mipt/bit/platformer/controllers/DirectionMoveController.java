@@ -8,7 +8,7 @@ import static com.badlogic.gdx.Input.Keys.*;
 public class DirectionMoveController implements IMoveController {
     @Override
     public Direction getDirection(Input input) {
-        Direction resultDirection = Direction.Empty;
+        Direction resultDirection = null;
 
         if (input.isKeyPressed(UP) || input.isKeyPressed(W)) {
             resultDirection = Direction.Up;
