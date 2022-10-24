@@ -1,26 +1,23 @@
 package ru.mipt.bit.platformer.commands.generator;
 
+import org.awesome.ai.Recommendation;
 import ru.mipt.bit.platformer.commands.ICommand;
 import ru.mipt.bit.platformer.commands.ICommandGenerator;
 import ru.mipt.bit.platformer.commands.command.MoveCommand;
-import ru.mipt.bit.platformer.entity.IMoveEntity;
-import ru.mipt.bit.platformer.entity.TankEntity;
+import ru.mipt.bit.platformer.converters.ConverterMoveCommand;
 import ru.mipt.bit.platformer.level.Level;
-import ru.mipt.bit.platformer.util.Direction;
-
-import org.awesome.ai.AI;
 
 import java.util.ArrayDeque;
 import java.util.Collection;
-import java.util.HashSet;
+import java.util.List;
 import java.util.Queue;
 
 public class BotAICommandGenerator implements ICommandGenerator {
-    private final HashSet<TankEntity> tankEntities;
+    private final List<Recommendation> recommendations;
     private final Level level;
 
-    public BotAICommandGenerator(HashSet<TankEntity> tankEntities, Level level) {
-        this.tankEntities = tankEntities;
+    public BotAICommandGenerator(List<Recommendation> recommendations, Level level) {
+        this.recommendations = recommendations;
         this.level = level;
     }
 
@@ -29,8 +26,8 @@ public class BotAICommandGenerator implements ICommandGenerator {
     public Collection<ICommand> generateCommands() {
         Queue<ICommand> commands = new ArrayDeque<>();
 
-        for(IMoveEntity entity: tankEntities){
-            MoveCommand command = new MoveCommand(Direction.getRandom(), entity, level);
+        for (Recommendation recommendation: recommendations){
+            MoveCommand command = ConverterMoveCommand.convert(recommendation, level);
             commands.add(command);
         }
 
