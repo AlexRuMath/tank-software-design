@@ -1,6 +1,7 @@
 package ru.mipt.bit.platformer.level.DTO;
 
 import com.badlogic.gdx.math.GridPoint2;
+import ru.mipt.bit.platformer.entity.TankEntity;
 import ru.mipt.bit.platformer.gameobjects.TankGameObject;
 
 import java.util.HashSet;
@@ -34,5 +35,16 @@ public class LevelTanks implements ITanks {
     @Override
     public HashSet<GridPoint2> getPositions() {
         return this.positions;
+    }
+
+    @Override
+    public HashSet<TankEntity> getEntities() {
+        HashSet<TankEntity> entities = new HashSet<>();
+
+        for (TankGameObject tankGameObject: tanks){
+            entities.add(tankGameObject.entity);
+        }
+
+        return entities;
     }
 }

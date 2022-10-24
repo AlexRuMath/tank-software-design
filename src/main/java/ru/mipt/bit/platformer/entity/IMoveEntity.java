@@ -8,4 +8,6 @@ public interface IMoveEntity {
     float getMovementProgress();
     void setDestinationTransform(Transform destination);
     void setMovementProgress(float movementProgress);
+
+    void move();
 }

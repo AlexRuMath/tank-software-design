@@ -1,8 +1,10 @@
 package ru.mipt.bit.platformer.gameobjects;
 
 import ru.mipt.bit.platformer.entity.BaseEntity;
+import ru.mipt.bit.platformer.entity.IMoveEntity;
 import ru.mipt.bit.platformer.entity.ModelTexture;
 import ru.mipt.bit.platformer.entity.TankEntity;
+import ru.mipt.bit.platformer.util.Transform;
 
 public class TankGameObject implements IGameObject {
     public final TankEntity entity;

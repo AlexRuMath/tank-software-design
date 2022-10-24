@@ -5,6 +5,7 @@ import ru.mipt.bit.platformer.util.Transform;
 public class TankEntity extends BaseEntity implements IMoveEntity {
     private Transform destinationTransform;
 
+    public static final float movementSpeed = 0.4f;
     private float movementProgress;
 
     public TankEntity(Transform transform) {
@@ -45,4 +46,11 @@ public class TankEntity extends BaseEntity implements IMoveEntity {
 
         this.movementProgress = movementProgress;
     }
+
+    @Override
+    public void move() {
+
+    }
+
+
 }

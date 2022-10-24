@@ -1,6 +1,7 @@
 package ru.mipt.bit.platformer.level.DTO;
 
 import com.badlogic.gdx.math.GridPoint2;
+import ru.mipt.bit.platformer.entity.TankEntity;
 import ru.mipt.bit.platformer.gameobjects.TankGameObject;
 import ru.mipt.bit.platformer.util.Transform;
 
@@ -12,4 +13,5 @@ public interface ITanks {
 
     HashSet<TankGameObject> getGameObjects();
     HashSet<GridPoint2> getPositions();
+    HashSet<TankEntity> getEntities();
 }
