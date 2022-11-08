@@ -1,10 +1,16 @@
 package ru.mipt.bit.platformer.level;
 
-import ru.mipt.bit.platformer.entity.TankEntity;
-import ru.mipt.bit.platformer.gameobjects.IGameObject;
+import com.badlogic.gdx.math.GridPoint2;
+import com.badlogic.gdx.math.Rectangle;
+import ru.mipt.bit.platformer.entity.ModelTexture;
+import ru.mipt.bit.platformer.entity.interfaces.IMoveEntity;
+import ru.mipt.bit.platformer.gameobjects.BulletGameObject;
+import ru.mipt.bit.platformer.gameobjects.interfaces.IGameObject;
 import ru.mipt.bit.platformer.gameobjects.TankGameObject;
-import ru.mipt.bit.platformer.level.DTO.ILevelObstacle;
-import ru.mipt.bit.platformer.level.DTO.ITanks;
+import ru.mipt.bit.platformer.level.dto.ILevelObstacle;
+import ru.mipt.bit.platformer.level.dto.ITanks;
+import ru.mipt.bit.platformer.level.dto.LevelBullet;
+import ru.mipt.bit.platformer.util.Transform;
 
 import static com.badlogic.gdx.math.MathUtils.isEqual;
 import static ru.mipt.bit.platformer.util.GdxGameUtils.continueProgress;
@@ -12,50 +18,62 @@ import static ru.mipt.bit.platformer.util.GdxGameUtils.continueProgress;
 public class Level {
     public ILevelObstacle levelObstacle;
     public ITanks levelTanks;
+
+    public LevelBullet levelBullets;
+
     public TankGameObject playerTank;
 
     public int height;
     public int width;
 
-    public Level(ILevelObstacle levelObstacle, ITanks levelTanks, TankGameObject playerTank, int height, int width){
+    public Level(ILevelObstacle levelObstacle, ITanks levelTanks, TankGameObject playerTank, int height, int width) {
         this.levelObstacle = levelObstacle;
         this.levelTanks = levelTanks;
         this.playerTank = playerTank;
+        this.levelBullets = new LevelBullet();
         this.height = height;
         this.width = width;
     }
 
-    public void dispose(){
+    public void dispose() {
         for (IGameObject gameObject : levelObstacle.getGameObjects()) {
-            gameObject.getModelTexture().getTexture().dispose();
+            gameObject.getModelTexture().texture.dispose();
         }
         for (IGameObject gameObject : levelObstacle.getGameObjects()) {
-            gameObject.getModelTexture().getTexture().dispose();
+            gameObject.getModelTexture().texture.dispose();
+        }
+        for (IGameObject gameObject : levelBullets.getGameObjects()){
+            gameObject.getModelTexture().texture.dispose();
         }
 
-        playerTank.getModelTexture().getTexture().dispose();
+        playerTank.getModelTexture().texture.dispose();
     }
 
-    private void interpolatedPosition(TankEntity entity, float deltaTime) {
-        float newProgress = continueProgress(entity.getMovementProgress(), deltaTime, TankEntity.movementSpeed);
+    private void interpolatedPosition(IMoveEntity entity, float deltaTime) {
+        float newProgress = continueProgress(entity.getMovementProgress(), deltaTime, entity.getMovementSpeed());
         entity.setMovementProgress(newProgress);
         if (isEqual(entity.getMovementProgress(), 1f)) {
-            entity.setDestinationPositionAsPosition();
+            entity.setDestinationTransformAsCurrentTransform();
         }
     }
 
-    private void movingTank(IGameObject gameObject, float deltaTime, LevelRender levelRender){
-        TankEntity tankEntity = (TankEntity) gameObject.getEntity();
-        interpolatedPosition(tankEntity, deltaTime);
+    private void movingObject(IGameObject gameObject, float deltaTime, LevelRender levelRender) {
+        IMoveEntity moveEntity = (IMoveEntity) gameObject.getEntity();
+        interpolatedPosition(moveEntity, deltaTime);
 
-        levelRender.moveRectangle("Ground", gameObject);
+        Rectangle rectangle = gameObject.getModelTexture().rectangle;
+        levelRender.moveRectangle("Ground", rectangle, moveEntity);
     }
 
-    public void movingObject(float deltaTime, LevelRender levelRender){
-        movingTank(playerTank, deltaTime, levelRender);
+    public void movingObjectsInLevel(float deltaTime, LevelRender levelRender) {
+        movingObject(playerTank, deltaTime, levelRender);
 
         for (IGameObject tank : levelTanks.getGameObjects()) {
-            movingTank(tank, deltaTime, levelRender);
+            movingObject(tank, deltaTime, levelRender);
+        }
+
+        for (IGameObject bullet : levelBullets.getGameObjects()) {
+            movingObject(bullet, deltaTime, levelRender);
         }
     }
 }
