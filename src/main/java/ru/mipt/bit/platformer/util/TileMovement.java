@@ -3,7 +3,7 @@ package ru.mipt.bit.platformer.util;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.Rectangle;
-import ru.mipt.bit.platformer.entity.IMoveEntity;
+import ru.mipt.bit.platformer.entity.interfaces.IMoveEntity;
 
 import static ru.mipt.bit.platformer.util.GdxGameUtils.moveRectangleAtTileCenter;
 
@@ -18,11 +18,11 @@ public class TileMovement {
     }
 
     public Rectangle moveRectangleBetweenTileCenters(Rectangle rectangle, IMoveEntity entity) {
-        moveRectangleAtTileCenter(tileLayer, rectangle, entity.getTransform().getPosition());
+        moveRectangleAtTileCenter(tileLayer, rectangle, entity.getTransform().position);
         float fromTileBottomLeftX = rectangle.x;
         float fromTileBottomLeftY = rectangle.y;
 
-        moveRectangleAtTileCenter(tileLayer, rectangle, entity.getDestinationTransform().getPosition());
+        moveRectangleAtTileCenter(tileLayer, rectangle, entity.getDestinationTransform().position);
         float toTileBottomLeftX = rectangle.x;
         float toTileBottomLeftY = rectangle.y;
 

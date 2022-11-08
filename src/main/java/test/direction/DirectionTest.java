@@ -17,8 +17,8 @@ public class DirectionTest extends Assert {
 
         Transform excpect = new Transform(new GridPoint2(0, 2), 90f);
 
-        assertEquals(excpect.getPosition(), end.getPosition());
-        assertEquals(excpect.getRotation(), end.getRotation(), 1e-2);
+        assertEquals(excpect.position, end.position);
+        assertEquals(excpect.rotation, end.rotation, 1e-2);
     }
 
     @Test
@@ -30,8 +30,8 @@ public class DirectionTest extends Assert {
 
         Transform excpect = new Transform(new GridPoint2(0, 0), -90f);
 
-        assertEquals(excpect.getPosition(), end.getPosition());
-        assertEquals(excpect.getRotation(), end.getRotation(), 1e-2);
+        assertEquals(excpect.position, end.position);
+        assertEquals(excpect.rotation, end.rotation, 1e-2);
     }
 
     @Test
@@ -43,8 +43,8 @@ public class DirectionTest extends Assert {
 
         Transform excpect = new Transform(new GridPoint2(-1, 1), 0f);
 
-        assertEquals(excpect.getPosition(), end.getPosition());
-        assertEquals(excpect.getRotation(), end.getRotation(), 1e-2);
+        assertEquals(excpect.position, end.position);
+        assertEquals(excpect.rotation, end.rotation, 1e-2);
     }
 
     @Test
@@ -56,8 +56,8 @@ public class DirectionTest extends Assert {
 
         Transform excpect = new Transform(new GridPoint2(1, 1), 0f);
 
-        assertEquals(excpect.getPosition(), end.getPosition());
-        assertEquals(excpect.getRotation(), end.getRotation(), 1e-2);
+        assertEquals(excpect.position, end.position);
+        assertEquals(excpect.rotation, end.rotation, 1e-2);
     }
 
     @Test
@@ -69,7 +69,7 @@ public class DirectionTest extends Assert {
 
         Transform excpect = new Transform(new GridPoint2(1, 2), 180f);
 
-        assertEquals(excpect.getPosition(), end.getPosition());
-        assertEquals(excpect.getRotation(), end.getRotation(), 1e-2);
+        assertEquals(excpect.position, end.position);
+        assertEquals(excpect.rotation, end.rotation, 1e-2);
     }
 }

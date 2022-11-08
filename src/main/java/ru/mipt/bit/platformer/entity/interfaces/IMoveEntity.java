@@ -1,4 +1,4 @@
-package ru.mipt.bit.platformer.entity;
+package ru.mipt.bit.platformer.entity.interfaces;
 
 import ru.mipt.bit.platformer.util.Transform;
 
@@ -8,6 +8,6 @@ public interface IMoveEntity {
     float getMovementProgress();
     void setDestinationTransform(Transform destination);
     void setMovementProgress(float movementProgress);
-
-    void move();
+    void setDestinationTransformAsCurrentTransform();
+    float getMovementSpeed();
 }

@@ -3,7 +3,7 @@ package ru.mipt.bit.platformer.generators;
 import com.badlogic.gdx.math.GridPoint2;
 import ru.mipt.bit.platformer.builders.ILevelBuilder;
 import ru.mipt.bit.platformer.builders.LevelBuilder;
-import ru.mipt.bit.platformer.level.DTO.IDataLevel;
+import ru.mipt.bit.platformer.level.dto.IDataLevel;
 import ru.mipt.bit.platformer.level.Level;
 import ru.mipt.bit.platformer.util.Transform;
 
@@ -40,7 +40,7 @@ public class RandomLevel implements IDataLevel {
 
         for (int i = 0; i < this.countObstacle; i++) {
             Transform pos = randomPosition(treeSet);
-            this.levelBuilder.addTree(pos.getPosition(), "images/greenTree.png");
+            this.levelBuilder.addTree(pos.position, "images/greenTree.png");
         }
 
         playerPosition = randomPosition(treeSet);

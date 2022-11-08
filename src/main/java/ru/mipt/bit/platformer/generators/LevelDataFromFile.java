@@ -4,7 +4,7 @@ import ru.mipt.bit.platformer.builders.ILevelBuilder;
 import ru.mipt.bit.platformer.builders.LevelBuilder;
 import ru.mipt.bit.platformer.entity.TankEntity;
 import ru.mipt.bit.platformer.entity.TreeEntity;
-import ru.mipt.bit.platformer.level.DTO.IDataLevel;
+import ru.mipt.bit.platformer.level.dto.IDataLevel;
 import ru.mipt.bit.platformer.level.Level;
 import ru.mipt.bit.platformer.parser.ParseResult;
 import ru.mipt.bit.platformer.util.Transform;
@@ -26,15 +26,15 @@ public class LevelDataFromFile implements IDataLevel {
         List<Transform> tanks = this.result.getList(TankEntity.class);
 
         for (Transform tree : trees) {
-            this.builder.addTree(tree.getPosition(), "images/greenTree.png");
+            this.builder.addTree(tree.position, "images/greenTree.png");
         }
 
         for (Transform tank : tanks) {
-            this.builder.addTank(tank.getPosition(), "images/tank_red.png");
+            this.builder.addTank(tank.position, "images/tank_red.png");
         }
 
         Transform transform = this.result.getPosition();
-        this.builder.addPlayer(transform.getPosition(), "images/tank_blue.png");
+        this.builder.addPlayer(transform.position, "images/tank_blue.png");
         this.builder.setWidth(result.width);
         this.builder.setHeight(result.height);
 

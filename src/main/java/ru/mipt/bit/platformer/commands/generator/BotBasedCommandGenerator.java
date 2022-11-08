@@ -3,7 +3,7 @@ package ru.mipt.bit.platformer.commands.generator;
 import ru.mipt.bit.platformer.commands.ICommand;
 import ru.mipt.bit.platformer.commands.ICommandGenerator;
 import ru.mipt.bit.platformer.commands.command.MoveCommand;
-import ru.mipt.bit.platformer.entity.IMoveEntity;
+import ru.mipt.bit.platformer.entity.interfaces.IMoveEntity;
 import ru.mipt.bit.platformer.entity.TankEntity;
 import ru.mipt.bit.platformer.level.Level;
 import ru.mipt.bit.platformer.util.Direction;

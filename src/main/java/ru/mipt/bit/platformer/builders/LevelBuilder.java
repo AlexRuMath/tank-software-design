@@ -6,10 +6,10 @@ import ru.mipt.bit.platformer.entity.TankEntity;
 import ru.mipt.bit.platformer.gameobjects.TankGameObject;
 import ru.mipt.bit.platformer.gameobjects.TreeGameObject;
 import ru.mipt.bit.platformer.level.*;
-import ru.mipt.bit.platformer.level.DTO.ILevelObstacle;
-import ru.mipt.bit.platformer.level.DTO.ITanks;
-import ru.mipt.bit.platformer.level.DTO.LevelObstacle;
-import ru.mipt.bit.platformer.level.DTO.LevelTanks;
+import ru.mipt.bit.platformer.level.dto.ILevelObstacle;
+import ru.mipt.bit.platformer.level.dto.ITanks;
+import ru.mipt.bit.platformer.level.dto.LevelObstacle;
+import ru.mipt.bit.platformer.level.dto.LevelTanks;
 import ru.mipt.bit.platformer.util.Transform;
 import ru.mipt.bit.platformer.entity.TreeEntity;
 

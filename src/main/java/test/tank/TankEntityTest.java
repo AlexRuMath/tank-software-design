@@ -42,8 +42,8 @@ public class TankEntityTest extends Assert {
 
         Transform position = tankEntity.getTransform();
 
-        assertEquals(position.getPosition(), destination.getPosition());
-        assertEquals(position.getRotation(), destination.getRotation(), 1e-2);
+        assertEquals(position.position, destination.position);
+        assertEquals(position.rotation, destination.rotation, 1e-2);
     }
 
     @Test(expected = IllegalArgumentException.class)

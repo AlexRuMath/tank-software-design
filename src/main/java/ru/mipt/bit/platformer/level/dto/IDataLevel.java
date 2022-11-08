@@ -1,4 +1,4 @@
-package ru.mipt.bit.platformer.level.DTO;
+package ru.mipt.bit.platformer.level.dto;
 
 import ru.mipt.bit.platformer.level.Level;
 

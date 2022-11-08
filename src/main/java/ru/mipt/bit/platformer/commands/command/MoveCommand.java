@@ -2,7 +2,7 @@ package ru.mipt.bit.platformer.commands.command;
 
 import com.badlogic.gdx.math.GridPoint2;
 import ru.mipt.bit.platformer.commands.ICommand;
-import ru.mipt.bit.platformer.entity.IMoveEntity;
+import ru.mipt.bit.platformer.entity.interfaces.IMoveEntity;
 import ru.mipt.bit.platformer.level.Level;
 import ru.mipt.bit.platformer.util.Direction;
 import ru.mipt.bit.platformer.util.Transform;
@@ -26,16 +26,18 @@ public class MoveCommand implements ICommand {
         if (!isEqual(moveEntity.getMovementProgress(), 1f)) return;
 
         Transform destinationPosition = this.direction.stepInTheDirection(this.moveEntity.getTransform());
-        GridPoint2 position = destinationPosition.getPosition();
+        GridPoint2 position = destinationPosition.position;
 
         boolean isObstaclePosition = this.level.levelObstacle.getPositions().contains(position);
+        boolean isTank = this.level.levelTanks.getPositions().contains(position);
         boolean isEndLevel = (position.x >= level.width) ||
                 (position.x < 0) ||
                 (position.y < 0) ||
                 (position.y >= level.height);
 
-        if (!isObstaclePosition && !isEndLevel) {
+        if (!isObstaclePosition && !isEndLevel && !isTank) {
             moveEntity.setDestinationTransform(destinationPosition);
+            moveEntity.setMovementProgress(0f);
         }
     }
 }

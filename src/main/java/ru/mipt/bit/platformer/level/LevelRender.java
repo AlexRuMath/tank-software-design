@@ -1,7 +1,6 @@
 package ru.mipt.bit.platformer.level;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.MapRenderer;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
@@ -9,11 +8,11 @@ import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.Rectangle;
 import ru.mipt.bit.platformer.entity.BaseEntity;
-import ru.mipt.bit.platformer.entity.IMoveEntity;
+import ru.mipt.bit.platformer.entity.interfaces.IMoveEntity;
 import ru.mipt.bit.platformer.entity.ModelTexture;
-import ru.mipt.bit.platformer.gameobjects.IGameObject;
-import ru.mipt.bit.platformer.level.DTO.ILevelObstacle;
-import ru.mipt.bit.platformer.level.DTO.ITanks;
+import ru.mipt.bit.platformer.gameobjects.BulletGameObject;
+import ru.mipt.bit.platformer.gameobjects.interfaces.IGameObject;
+import ru.mipt.bit.platformer.level.dto.ILevelObstacle;
 import ru.mipt.bit.platformer.util.TileMovement;
 import ru.mipt.bit.platformer.util.Transform;
 
@@ -46,7 +45,7 @@ public class LevelRender {
             ModelTexture texture = gameObject.getModelTexture();
             BaseEntity entity = gameObject.getEntity();
 
-            moveRectangleAtTileCenter(groundLayer, texture.getRectangle(), entity.transform.getPosition());
+            moveRectangleAtTileCenter(groundLayer, texture.rectangle, entity.transform.position);
         }
     }
 
@@ -64,15 +63,16 @@ public class LevelRender {
         this.mapMovements.put(nameLayer, movement);
     }
 
-    public void moveRectangle(String nameLayer, IGameObject gameObject){
-        Rectangle rectangle = gameObject.getModelTexture().getRectangle();
-        IMoveEntity moveEntity = (IMoveEntity) gameObject.getEntity();
-
+    public void moveRectangle(String nameLayer, Rectangle rectangle, IMoveEntity moveEntity){
         this.mapMovements.get(nameLayer).moveRectangleBetweenTileCenters(rectangle, moveEntity);
     }
 
     public void renderLevelObject(Level level, Batch batch){
         drawModel(level.playerTank, batch);
+
+        for (IGameObject gameObject : level.levelBullets.getGameObjects()) {
+            drawModel(gameObject, batch);
+        }
 
         for (IGameObject gameObject : level.levelObstacle.getGameObjects()) {
             drawModel(gameObject, batch);
@@ -87,9 +87,9 @@ public class LevelRender {
         ModelTexture texture = gameObject.getModelTexture();
         Transform transform = gameObject.getEntity().transform;
 
-        drawTextureRegionUnscaled(batch, texture.getTextureRegion(),
-                texture.getRectangle(),
-                transform.getRotation());
+        drawTextureRegionUnscaled(batch, texture.textureRegion,
+                                         texture.rectangle,
+                                         transform.rotation);
     }
 
     public void dispose(){

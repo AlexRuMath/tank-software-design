@@ -1,9 +1,8 @@
-package ru.mipt.bit.platformer.level.DTO;
+package ru.mipt.bit.platformer.level.dto;
 
 import com.badlogic.gdx.math.GridPoint2;
 import ru.mipt.bit.platformer.entity.BaseEntity;
-import ru.mipt.bit.platformer.gameobjects.IGameObject;
-import ru.mipt.bit.platformer.level.DTO.ILevelObstacle;
+import ru.mipt.bit.platformer.gameobjects.interfaces.IGameObject;
 
 import java.util.HashSet;
 
@@ -20,16 +19,13 @@ public class LevelObstacle implements ILevelObstacle {
 
     public void addObstacle(IGameObject gameObject) {
         obstacleSet.add(gameObject.getEntity());
-        obstaclePositionSet.add(gameObject.getEntity().transform.getPosition());
+        gameObject.getEntity();
+        obstaclePositionSet.add(gameObject.getEntity().transform.position);
         obstacleGameObject.add(gameObject);
     }
 
     public HashSet<GridPoint2> getPositions() {
         return this.obstaclePositionSet;
-    }
-
-    public HashSet<BaseEntity> getEntities() {
-        return this.obstacleSet;
     }
 
     public HashSet<IGameObject> getGameObjects() {

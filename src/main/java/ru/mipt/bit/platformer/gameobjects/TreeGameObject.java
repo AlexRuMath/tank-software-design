@@ -2,8 +2,8 @@ package ru.mipt.bit.platformer.gameobjects;
 
 import ru.mipt.bit.platformer.entity.BaseEntity;
 import ru.mipt.bit.platformer.entity.ModelTexture;
-import ru.mipt.bit.platformer.entity.TankEntity;
 import ru.mipt.bit.platformer.entity.TreeEntity;
+import ru.mipt.bit.platformer.gameobjects.interfaces.IGameObject;
 
 public class TreeGameObject implements IGameObject {
     public final TreeEntity entity;

@@ -5,9 +5,12 @@ import com.badlogic.gdx.Input;
 import ru.mipt.bit.platformer.commands.ICommand;
 import ru.mipt.bit.platformer.commands.ICommandGenerator;
 import ru.mipt.bit.platformer.commands.command.MoveCommand;
-import ru.mipt.bit.platformer.entity.IMoveEntity;
+import ru.mipt.bit.platformer.commands.command.ShootCommand;
+import ru.mipt.bit.platformer.entity.TankEntity;
+import ru.mipt.bit.platformer.entity.interfaces.IMoveEntity;
 import ru.mipt.bit.platformer.level.Level;
 import ru.mipt.bit.platformer.util.Direction;
+import ru.mipt.bit.platformer.util.Transform;
 
 import java.util.ArrayDeque;
 import java.util.Collection;
@@ -41,6 +44,12 @@ public class InputBasedCommandGenerator implements ICommandGenerator {
         }
         if (input.isKeyPressed(RIGHT) || input.isKeyPressed(D)) {
             commandQueue.add(new MoveCommand(Direction.Right, this.moveEntity, level));
+        }
+        if (input.isKeyPressed(SPACE)) {
+            Direction direction = Direction.fromRotation(this.moveEntity.getTransform().rotation);
+            Transform position = direction.stepInTheDirection(this.moveEntity.getTransform());
+            TankEntity tankEntity = (TankEntity) this.moveEntity;
+            commandQueue.add(new ShootCommand(tankEntity, position, direction, level));
         }
 
         return commandQueue;

@@ -1,4 +1,4 @@
-package ru.mipt.bit.platformer.level.DTO;
+package ru.mipt.bit.platformer.level.dto;
 
 import com.badlogic.gdx.math.GridPoint2;
 import ru.mipt.bit.platformer.entity.TankEntity;
@@ -10,6 +10,7 @@ import java.util.HashSet;
 public interface ITanks {
     void addTank(TankGameObject gameObject);
     void removeTank(TankGameObject gameObject);
+    void updatePosition(GridPoint2 oldPosition, GridPoint2 newPosition);
 
     HashSet<TankGameObject> getGameObjects();
     HashSet<GridPoint2> getPositions();
