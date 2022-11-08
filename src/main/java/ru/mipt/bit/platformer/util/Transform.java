@@ -3,8 +3,8 @@ package ru.mipt.bit.platformer.util;
 import com.badlogic.gdx.math.GridPoint2;
 
 public class Transform {
-    private GridPoint2 position;
-    private float rotation;
+    public GridPoint2 position;
+    public float rotation;
 
     public Transform(GridPoint2 position, float rotation) {
         this.position = position;
@@ -17,19 +17,15 @@ public class Transform {
     }
 
     public void copyFromTransform(Transform transform) {
-        this.position = new GridPoint2(transform.getPosition());
-        this.rotation = transform.getRotation();
+        this.position = new GridPoint2(transform.position);
+        this.rotation = transform.rotation;
     }
 
-    public GridPoint2 getPosition() {
-        return position;
+    public static Transform valueOf(Transform transform){
+        return new Transform(transform.position, transform.rotation);
     }
 
-    public float getRotation() {
-        return rotation;
-    }
-
-    public void setRotation(float rotation) {
-        this.rotation = rotation;
+    public Direction getDirection(){
+        return new Direction(this.position, this.rotation);
     }
 }
