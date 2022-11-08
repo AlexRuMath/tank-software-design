@@ -1,4 +1,4 @@
-package ru.mipt.bit.platformer.level.DTO;
+package ru.mipt.bit.platformer.level.dto;
 
 import com.badlogic.gdx.math.GridPoint2;
 import ru.mipt.bit.platformer.entity.TankEntity;
@@ -18,13 +18,19 @@ public class LevelTanks implements ITanks {
     @Override
     public void addTank(TankGameObject gameObject) {
         this.tanks.add(gameObject);
-        this.positions.add(gameObject.entity.transform.getPosition());
+        this.positions.add(gameObject.entity.transform.position);
     }
 
     @Override
     public void removeTank(TankGameObject gameObject) {
         this.tanks.remove(gameObject);
-        this.positions.remove(gameObject.entity.transform.getPosition());
+        this.positions.remove(gameObject.entity.transform.position);
+    }
+
+    @Override
+    public void updatePosition(GridPoint2 oldPosition, GridPoint2 newPosition) {
+        this.positions.remove(oldPosition);
+        this.positions.add(newPosition);
     }
 
     @Override
