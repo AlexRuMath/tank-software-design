@@ -1,12 +1,14 @@
 package ru.mipt.bit.platformer.entity;
 
+import ru.mipt.bit.platformer.entity.interfaces.IMoveEntity;
 import ru.mipt.bit.platformer.util.Transform;
 
 public class TankEntity extends BaseEntity implements IMoveEntity {
     private Transform destinationTransform;
-
-    public static final float movementSpeed = 0.4f;
+    private final float movementSpeed = 0.4f;
     private float movementProgress;
+
+    public boolean isShoot = false;
 
     public TankEntity(Transform transform) {
         super(transform);
@@ -16,7 +18,7 @@ public class TankEntity extends BaseEntity implements IMoveEntity {
 
     public void setDestinationTransform(Transform transform) {
         this.destinationTransform = transform;
-        this.transform.setRotation(transform.getRotation());
+        this.transform.rotation = transform.rotation;
         this.movementProgress = 0f;
     }
 
@@ -48,9 +50,12 @@ public class TankEntity extends BaseEntity implements IMoveEntity {
     }
 
     @Override
-    public void move() {
-
+    public void setDestinationTransformAsCurrentTransform() {
+        this.transform.copyFromTransform(this.destinationTransform);
     }
 
-
+    @Override
+    public float getMovementSpeed() {
+        return this.movementSpeed;
+    }
 }
