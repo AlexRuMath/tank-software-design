@@ -14,7 +14,7 @@ public class LevelBuilder implements ILevelBuilder {
 
     private ILevelObstacle levelObstacle;
 
-    private ITanks levelTanks;
+    private ILevelTanks levelTanks;
 
     private LevelBullet levelBullet;
 
@@ -86,7 +86,7 @@ public class LevelBuilder implements ILevelBuilder {
 
     @Override
     public void clear() {
-        this.levelTanks = new LevelTanks();
+        this.levelTanks = new LevelLevelTanks();
         this.levelObstacle = new LevelObstacle();
         this.levelBullet = new LevelBullet();
     }

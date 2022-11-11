@@ -4,18 +4,18 @@ import ru.mipt.bit.platformer.builders.ILevelBuilder;
 import ru.mipt.bit.platformer.builders.LevelBuilder;
 import ru.mipt.bit.platformer.entity.TankEntity;
 import ru.mipt.bit.platformer.entity.TreeEntity;
-import ru.mipt.bit.platformer.level.dto.IDataLevel;
+import ru.mipt.bit.platformer.level.dto.ILevelData;
 import ru.mipt.bit.platformer.level.Level;
 import ru.mipt.bit.platformer.parser.ParseResult;
 import ru.mipt.bit.platformer.util.Transform;
 
 import java.util.List;
 
-public class LevelDataFromFile implements IDataLevel {
+public class LevelFromFileData implements ILevelData {
     private ILevelBuilder builder;
     private ParseResult result;
 
-    public LevelDataFromFile(ParseResult data){
+    public LevelFromFileData(ParseResult data){
         this.builder = new LevelBuilder();
         this.result = data;
     }

@@ -40,7 +40,6 @@ public class MoveBulletCommand implements ICommand {
         }
 
         if(response.type == CollisionType.Enemy){
-            level.levelBullets.removeByEntity(bulletEntity);
             level.levelTanks.removeByEntity(response.secondObject);
         }
 

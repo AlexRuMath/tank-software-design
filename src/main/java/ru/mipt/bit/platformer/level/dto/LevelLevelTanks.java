@@ -7,10 +7,10 @@ import ru.mipt.bit.platformer.gameobjects.TankGameObject;
 
 import java.util.HashSet;
 
-public class LevelTanks implements ITanks {
+public class LevelLevelTanks implements ILevelTanks {
     private HashSet<TankGameObject> tanks;
 
-    public LevelTanks(){
+    public LevelLevelTanks(){
         this.tanks = new HashSet<>();
     }
 

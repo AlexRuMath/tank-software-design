@@ -3,7 +3,7 @@ package ru.mipt.bit.platformer.generators;
 import com.badlogic.gdx.math.GridPoint2;
 import ru.mipt.bit.platformer.builders.ILevelBuilder;
 import ru.mipt.bit.platformer.builders.LevelBuilder;
-import ru.mipt.bit.platformer.level.dto.IDataLevel;
+import ru.mipt.bit.platformer.level.dto.ILevelData;
 import ru.mipt.bit.platformer.level.Level;
 import ru.mipt.bit.platformer.util.Transform;
 
@@ -11,7 +11,7 @@ import java.util.HashSet;
 import java.util.Random;
 import java.util.Set;
 
-public class RandomLevel implements IDataLevel {
+public class RandomLevelData implements ILevelData {
     private ILevelBuilder levelBuilder;
     private Random random;
     private int countObstacle = 10;
@@ -20,7 +20,7 @@ public class RandomLevel implements IDataLevel {
 
     private Transform playerPosition;
 
-    public RandomLevel(int x, int y, int countObstacle) {
+    public RandomLevelData(int x, int y, int countObstacle) {
         this.countObstacle = countObstacle;
         this.levelBuilder = new LevelBuilder();
         this.random = new Random();
@@ -28,7 +28,7 @@ public class RandomLevel implements IDataLevel {
         this.height = y;
     }
 
-    public RandomLevel(int x, int y) {
+    public RandomLevelData(int x, int y) {
         this.levelBuilder = new LevelBuilder();
         this.random = new Random();
         this.width = x;

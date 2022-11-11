@@ -16,10 +16,10 @@ import ru.mipt.bit.platformer.commands.ICommandGenerator;
 import ru.mipt.bit.platformer.commands.generator.BotBasedCommandGenerator;
 import ru.mipt.bit.platformer.commands.generator.BulletMovedCommandGenerator;
 import ru.mipt.bit.platformer.commands.generator.InputBasedCommandGenerator;
-import ru.mipt.bit.platformer.generators.LevelDataFromFile;
+import ru.mipt.bit.platformer.generators.LevelFromFileData;
 import ru.mipt.bit.platformer.level.Level;
 import ru.mipt.bit.platformer.level.LevelRender;
-import ru.mipt.bit.platformer.level.dto.IDataLevel;
+import ru.mipt.bit.platformer.level.dto.ILevelData;
 import ru.mipt.bit.platformer.parser.IParser;
 import ru.mipt.bit.platformer.parser.ParseResult;
 import ru.mipt.bit.platformer.parser.ParserLevelFromTxt;
@@ -53,7 +53,7 @@ public class GameDesktopLauncher implements ApplicationListener {
         IParser parser = new ParserLevelFromTxt(levelRender.getWidth(), levelRender.getHeight());
         ParseResult parseResult = parser.parse("src/main/resources/positions.txt");
 
-        IDataLevel dataLevel = new LevelDataFromFile(parseResult);
+        ILevelData dataLevel = new LevelFromFileData(parseResult);
         level = dataLevel.createLevel();
         levelRender.setObstacle(level.levelObstacle);
 
