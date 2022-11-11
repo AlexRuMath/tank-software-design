@@ -7,6 +7,10 @@ import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Interpolation;
+import ru.mipt.bit.platformer.collision.Collision;
+import ru.mipt.bit.platformer.collision.requests.EndLevelCollisionRequest;
+import ru.mipt.bit.platformer.collision.requests.TankCollisionRequest;
+import ru.mipt.bit.platformer.collision.requests.TreeCollisionRequest;
 import ru.mipt.bit.platformer.commands.ICommand;
 import ru.mipt.bit.platformer.commands.ICommandGenerator;
 import ru.mipt.bit.platformer.commands.generator.BotBasedCommandGenerator;
@@ -32,12 +36,15 @@ public class GameDesktopLauncher implements ApplicationListener {
 
     private Level level;
 
+    private Collision levelCollision;
+
     private Collection<ICommandGenerator> commandGenerators;
 
     @Override
     public void create() {
         batch = new SpriteBatch();
         commandGenerators = new ArrayList<>();
+        levelCollision = new Collision();
 
         levelRender.setLevelScheme("level.tmx");
         levelRender.setLayerRenderer(batch);
@@ -50,13 +57,17 @@ public class GameDesktopLauncher implements ApplicationListener {
         level = dataLevel.createLevel();
         levelRender.setObstacle(level.levelObstacle);
 
-        createCommandGenerators();
+        configureObjects();
     }
 
-    private void createCommandGenerators() {
-        commandGenerators.add(new InputBasedCommandGenerator(level.playerTank.entity, level));
-        commandGenerators.add(new BotBasedCommandGenerator(level.levelTanks.getEntities(), level));
-        commandGenerators.add(new BulletMovedCommandGenerator(level));
+    private void configureObjects() {
+        levelCollision.addRequest(new TankCollisionRequest());
+        levelCollision.addRequest(new TreeCollisionRequest());
+        levelCollision.addRequest(new EndLevelCollisionRequest());
+
+        commandGenerators.add(new InputBasedCommandGenerator(level.playerTank.entity, level, levelCollision));
+        commandGenerators.add(new BotBasedCommandGenerator(level.levelTanks.getEntities(), level, levelCollision));
+        commandGenerators.add(new BulletMovedCommandGenerator(level, levelCollision));
     }
 
     @Override

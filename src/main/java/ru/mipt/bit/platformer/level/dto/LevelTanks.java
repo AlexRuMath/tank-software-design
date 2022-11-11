@@ -1,6 +1,7 @@
 package ru.mipt.bit.platformer.level.dto;
 
 import com.badlogic.gdx.math.GridPoint2;
+import ru.mipt.bit.platformer.entity.BaseEntity;
 import ru.mipt.bit.platformer.entity.TankEntity;
 import ru.mipt.bit.platformer.gameobjects.TankGameObject;
 
@@ -8,29 +9,29 @@ import java.util.HashSet;
 
 public class LevelTanks implements ITanks {
     private HashSet<TankGameObject> tanks;
-    private HashSet<GridPoint2> positions;
 
     public LevelTanks(){
         this.tanks = new HashSet<>();
-        this.positions = new HashSet<>();
     }
 
     @Override
     public void addTank(TankGameObject gameObject) {
         this.tanks.add(gameObject);
-        this.positions.add(gameObject.entity.transform.position);
     }
 
     @Override
     public void removeTank(TankGameObject gameObject) {
         this.tanks.remove(gameObject);
-        this.positions.remove(gameObject.entity.transform.position);
     }
 
     @Override
-    public void updatePosition(GridPoint2 oldPosition, GridPoint2 newPosition) {
-        this.positions.remove(oldPosition);
-        this.positions.add(newPosition);
+    public void removeByEntity(BaseEntity entity) {
+        for(TankGameObject gameObject: tanks){
+            if(entity == gameObject.entity){
+                tanks.remove(gameObject);
+                break;
+            }
+        }
     }
 
     @Override
@@ -40,7 +41,13 @@ public class LevelTanks implements ITanks {
 
     @Override
     public HashSet<GridPoint2> getPositions() {
-        return this.positions;
+        HashSet<GridPoint2> positions = new HashSet<>();
+
+        for(TankGameObject gameObject: tanks){
+            positions.add(gameObject.entity.transform.position);
+        }
+
+        return positions;
     }
 
     @Override

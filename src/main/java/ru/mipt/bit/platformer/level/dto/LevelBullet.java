@@ -39,26 +39,7 @@ public class LevelBullet {
         }
     }
 
-    public void updatePosition(GridPoint2 oldPosition, GridPoint2 newPosition) {
-        this.positions.remove(oldPosition);
-        this.positions.add(newPosition);
-    }
-
     public HashSet<BulletGameObject> getGameObjects() {
         return this.gameObjects;
-    }
-
-    public HashSet<GridPoint2> getPositions() {
-        return this.positions;
-    }
-
-    public HashSet<BulletEntity> getEntities() {
-        HashSet<BulletEntity> entities = new HashSet<>();
-
-        for (BulletGameObject bulletGameObject: this.gameObjects){
-            entities.add(bulletGameObject.entity);
-        }
-
-        return entities;
     }
 }

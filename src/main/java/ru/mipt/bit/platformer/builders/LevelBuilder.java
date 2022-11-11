@@ -6,17 +6,17 @@ import ru.mipt.bit.platformer.entity.TankEntity;
 import ru.mipt.bit.platformer.gameobjects.TankGameObject;
 import ru.mipt.bit.platformer.gameobjects.TreeGameObject;
 import ru.mipt.bit.platformer.level.*;
-import ru.mipt.bit.platformer.level.dto.ILevelObstacle;
-import ru.mipt.bit.platformer.level.dto.ITanks;
-import ru.mipt.bit.platformer.level.dto.LevelObstacle;
-import ru.mipt.bit.platformer.level.dto.LevelTanks;
+import ru.mipt.bit.platformer.level.dto.*;
 import ru.mipt.bit.platformer.util.Transform;
 import ru.mipt.bit.platformer.entity.TreeEntity;
 
 public class LevelBuilder implements ILevelBuilder {
 
     private ILevelObstacle levelObstacle;
+
     private ITanks levelTanks;
+
+    private LevelBullet levelBullet;
 
     private int height, width;
 
@@ -76,7 +76,10 @@ public class LevelBuilder implements ILevelBuilder {
 
     @Override
     public Level create() {
-        Level level = new Level(levelObstacle, levelTanks, player, height, width);
+        LevelSize levelSize = new LevelSize(width, height, 0, 0);
+
+        Level level = new Level(levelObstacle, levelTanks, levelBullet, player, levelSize);
+
         this.clear();
         return level;
     }
@@ -85,5 +88,6 @@ public class LevelBuilder implements ILevelBuilder {
     public void clear() {
         this.levelTanks = new LevelTanks();
         this.levelObstacle = new LevelObstacle();
+        this.levelBullet = new LevelBullet();
     }
 }

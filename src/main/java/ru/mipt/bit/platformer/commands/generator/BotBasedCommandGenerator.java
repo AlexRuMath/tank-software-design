@@ -1,5 +1,6 @@
 package ru.mipt.bit.platformer.commands.generator;
 
+import ru.mipt.bit.platformer.collision.Collision;
 import ru.mipt.bit.platformer.commands.ICommand;
 import ru.mipt.bit.platformer.commands.ICommandGenerator;
 import ru.mipt.bit.platformer.commands.command.MoveCommand;
@@ -16,10 +17,12 @@ import java.util.Queue;
 public class BotBasedCommandGenerator implements ICommandGenerator {
     private final HashSet<TankEntity> tankEntities;
     private final Level level;
+    private final Collision collision;
 
-    public BotBasedCommandGenerator(HashSet<TankEntity> tankEntities, Level level) {
+    public BotBasedCommandGenerator(HashSet<TankEntity> tankEntities, Level level, Collision collision) {
         this.tankEntities = tankEntities;
         this.level = level;
+        this.collision = collision;
     }
 
 
@@ -28,7 +31,7 @@ public class BotBasedCommandGenerator implements ICommandGenerator {
         Queue<ICommand> commands = new ArrayDeque<>();
 
         for(IMoveEntity entity: tankEntities){
-            MoveCommand command = new MoveCommand(Direction.getRandom(), entity, level);
+            MoveCommand command = new MoveCommand(Direction.getRandom(), entity, level, collision);
             commands.add(command);
         }
 

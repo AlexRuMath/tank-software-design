@@ -1,6 +1,9 @@
 package ru.mipt.bit.platformer.commands.command;
 
 import com.badlogic.gdx.math.GridPoint2;
+import ru.mipt.bit.platformer.collision.Collision;
+import ru.mipt.bit.platformer.collision.CollisionResponse;
+import ru.mipt.bit.platformer.collision.CollisionType;
 import ru.mipt.bit.platformer.commands.ICommand;
 import ru.mipt.bit.platformer.entity.BulletEntity;
 import ru.mipt.bit.platformer.level.Level;
@@ -14,34 +17,34 @@ public class MoveBulletCommand implements ICommand {
     private final Direction direction;
     private final BulletEntity bulletEntity;
     private final Level level;
+    private final Collision collision;
 
-    public MoveBulletCommand(Direction direction, BulletEntity bulletEntity, Level level) {
+    public MoveBulletCommand(Direction direction, BulletEntity bulletEntity, Level level, Collision collision) {
         this.direction = direction;
         this.bulletEntity = bulletEntity;
         this.level = level;
+        this.collision = collision;
     }
 
     @Override
     public void execute() {
         if (!isEqual(bulletEntity.getMovementProgress(), 1f)) return;
 
-        Transform destinationPosition = this.direction.stepInTheDirection(this.bulletEntity.transform);
-        GridPoint2 position = destinationPosition.position;
+        Transform destinationPosition = this.direction.stepInTheDirection(this.bulletEntity.getTransform());
+        CollisionResponse response = collision.sendRequests(this.bulletEntity, destinationPosition.position, this.level);
 
-        boolean isObstaclePosition = this.level.levelObstacle.getPositions().contains(position);
-        boolean isTank = this.level.levelTanks.getPositions().contains(position);
-        boolean isEndLevel =    (position.x >= level.width) ||
-                                (position.x < 0) ||
-                                (position.y < 0) ||
-                                (position.y >= level.height);
-
-        if(isObstaclePosition || isTank || isEndLevel) {
-            this.bulletEntity.owner.isShoot = false;
-            this.level.levelBullets.removeByEntity(this.bulletEntity);
+        if (response.type == CollisionType.NoCollision) {
+            bulletEntity.setDestinationTransform(destinationPosition);
+            bulletEntity.setMovementProgress(0f);
             return;
         }
 
-        bulletEntity.setDestinationTransform(destinationPosition);
-        bulletEntity.setMovementProgress(0f);
+        if(response.type == CollisionType.Enemy){
+            level.levelBullets.removeByEntity(bulletEntity);
+            level.levelTanks.removeByEntity(response.secondObject);
+        }
+
+        bulletEntity.owner.isShoot = false;
+        level.levelBullets.removeByEntity(bulletEntity);
     }
 }
