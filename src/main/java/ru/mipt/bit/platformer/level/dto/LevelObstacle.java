@@ -2,12 +2,13 @@ package ru.mipt.bit.platformer.level.dto;
 
 import com.badlogic.gdx.math.GridPoint2;
 import ru.mipt.bit.platformer.entity.BaseEntity;
+import ru.mipt.bit.platformer.entity.interfaces.IGameEntity;
 import ru.mipt.bit.platformer.gameobjects.interfaces.IGameObject;
 
 import java.util.HashSet;
 
 public class LevelObstacle implements ILevelObstacle {
-    private final HashSet<BaseEntity> obstacleSet;
+    private final HashSet<IGameEntity> obstacleSet;
     private final HashSet<GridPoint2> obstaclePositionSet;
     private final HashSet<IGameObject> obstacleGameObject;
 
@@ -18,9 +19,9 @@ public class LevelObstacle implements ILevelObstacle {
     }
 
     public void addObstacle(IGameObject gameObject) {
-        obstacleSet.add(gameObject.getEntity());
-        gameObject.getEntity();
-        obstaclePositionSet.add(gameObject.getEntity().transform.position);
+        obstacleSet.add(gameObject.getGameEntity());
+        gameObject.getGameEntity();
+        obstaclePositionSet.add(gameObject.getGameEntity().getTransform().position);
         obstacleGameObject.add(gameObject);
     }
 

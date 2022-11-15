@@ -7,10 +7,9 @@ import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.Rectangle;
-import ru.mipt.bit.platformer.entity.BaseEntity;
-import ru.mipt.bit.platformer.entity.interfaces.IMoveEntity;
+import ru.mipt.bit.platformer.entity.interfaces.IGameEntity;
+import ru.mipt.bit.platformer.entity.interfaces.IMoveablePart;
 import ru.mipt.bit.platformer.entity.ModelTexture;
-import ru.mipt.bit.platformer.gameobjects.BulletGameObject;
 import ru.mipt.bit.platformer.gameobjects.interfaces.IGameObject;
 import ru.mipt.bit.platformer.level.dto.ILevelObstacle;
 import ru.mipt.bit.platformer.util.TileMovement;
@@ -43,9 +42,9 @@ public class LevelRender {
 
         for (IGameObject gameObject : levelObstacle.getGameObjects()) {
             ModelTexture texture = gameObject.getModelTexture();
-            BaseEntity entity = gameObject.getEntity();
+            IGameEntity entity = gameObject.getGameEntity();
 
-            moveRectangleAtTileCenter(groundLayer, texture.rectangle, entity.transform.position);
+            moveRectangleAtTileCenter(groundLayer, texture.rectangle, entity.getTransform().position);
         }
     }
 
@@ -63,8 +62,8 @@ public class LevelRender {
         this.mapMovements.put(nameLayer, movement);
     }
 
-    public void moveRectangle(String nameLayer, Rectangle rectangle, IMoveEntity moveEntity){
-        this.mapMovements.get(nameLayer).moveRectangleBetweenTileCenters(rectangle, moveEntity);
+    public void moveRectangle(String nameLayer, Rectangle rectangle, IMoveablePart movablePart){
+        this.mapMovements.get(nameLayer).moveRectangleBetweenTileCenters(rectangle, movablePart);
     }
 
     public void renderLevelObject(Level level, Batch batch){
@@ -85,7 +84,7 @@ public class LevelRender {
 
     private void drawModel(IGameObject gameObject, Batch batch) {
         ModelTexture texture = gameObject.getModelTexture();
-        Transform transform = gameObject.getEntity().transform;
+        Transform transform = gameObject.getGameEntity().getTransform();
 
         drawTextureRegionUnscaled(batch, texture.textureRegion,
                                          texture.rectangle,

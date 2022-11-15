@@ -3,39 +3,32 @@ package ru.mipt.bit.platformer.level.dto;
 import com.badlogic.gdx.math.GridPoint2;
 import ru.mipt.bit.platformer.entity.BaseEntity;
 import ru.mipt.bit.platformer.entity.TankEntity;
+import ru.mipt.bit.platformer.entity.interfaces.IGameEntity;
 import ru.mipt.bit.platformer.gameobjects.TankGameObject;
+import ru.mipt.bit.platformer.gameobjects.interfaces.IDynamicObject;
+import ru.mipt.bit.platformer.gameobjects.interfaces.IGameObject;
 
 import java.util.HashSet;
 
-public class LevelLevelTanks implements ILevelTanks {
-    private HashSet<TankGameObject> tanks;
+public class DefaultLevelTanks implements ILevelTanks {
+    private HashSet<IDynamicObject> tanks;
 
-    public LevelLevelTanks(){
+    public DefaultLevelTanks(){
         this.tanks = new HashSet<>();
     }
 
     @Override
-    public void addTank(TankGameObject gameObject) {
+    public void addTank(IDynamicObject gameObject) {
         this.tanks.add(gameObject);
     }
 
     @Override
-    public void removeTank(TankGameObject gameObject) {
+    public void removeTank(IGameObject gameObject) {
         this.tanks.remove(gameObject);
     }
 
     @Override
-    public void removeByEntity(BaseEntity entity) {
-        for(TankGameObject gameObject: tanks){
-            if(entity == gameObject.entity){
-                tanks.remove(gameObject);
-                break;
-            }
-        }
-    }
-
-    @Override
-    public HashSet<TankGameObject> getGameObjects() {
+    public HashSet<IDynamicObject> getGameObjects() {
         return this.tanks;
     }
 
@@ -43,8 +36,8 @@ public class LevelLevelTanks implements ILevelTanks {
     public HashSet<GridPoint2> getPositions() {
         HashSet<GridPoint2> positions = new HashSet<>();
 
-        for(TankGameObject gameObject: tanks){
-            positions.add(gameObject.entity.transform.position);
+        for(IDynamicObject gameObject: tanks){
+            positions.add(gameObject.getMoveablePart().getTransform().position);
         }
 
         return positions;
@@ -54,8 +47,8 @@ public class LevelLevelTanks implements ILevelTanks {
     public HashSet<TankEntity> getEntities() {
         HashSet<TankEntity> entities = new HashSet<>();
 
-        for (TankGameObject tankGameObject: tanks){
-            entities.add(tankGameObject.entity);
+        for (IDynamicObject tankGameObject: tanks){
+            entities.add((TankEntity) tankGameObject.getGameEntity());
         }
 
         return entities;

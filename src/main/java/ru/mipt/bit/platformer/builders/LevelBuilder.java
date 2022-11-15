@@ -1,14 +1,12 @@
 package ru.mipt.bit.platformer.builders;
 
 import com.badlogic.gdx.math.GridPoint2;
-import ru.mipt.bit.platformer.entity.ModelTexture;
-import ru.mipt.bit.platformer.entity.TankEntity;
+import ru.mipt.bit.platformer.fabrics.DefaultObjectFabric;
 import ru.mipt.bit.platformer.gameobjects.TankGameObject;
 import ru.mipt.bit.platformer.gameobjects.TreeGameObject;
 import ru.mipt.bit.platformer.level.*;
 import ru.mipt.bit.platformer.level.dto.*;
 import ru.mipt.bit.platformer.util.Transform;
-import ru.mipt.bit.platformer.entity.TreeEntity;
 
 public class LevelBuilder implements ILevelBuilder {
 
@@ -22,54 +20,45 @@ public class LevelBuilder implements ILevelBuilder {
 
     private TankGameObject player;
 
+    private DefaultObjectFabric entityFabric;
+
     public LevelBuilder() {
+        this.entityFabric = new DefaultObjectFabric();
         this.clear();
     }
 
     @Override
     public ILevelBuilder addTree(GridPoint2 position, String pathToTexture) {
-        ModelTexture treeTexture = new ModelTexture(pathToTexture);
-        Transform treeTransform = new Transform(position);
-        TreeEntity treeEntity = new TreeEntity(treeTransform);
-        TreeGameObject gameObject = new TreeGameObject(treeEntity, treeTexture);
-
+        Transform transform = new Transform(position);
+        TreeGameObject gameObject = this.entityFabric.createTree(transform, pathToTexture);
         this.levelObstacle.addObstacle(gameObject);
         return this;
     }
 
     @Override
     public ILevelBuilder addTank(GridPoint2 position, String pathToTexture) {
-        ModelTexture tankTexture = new ModelTexture(pathToTexture);
-        Transform tankTransform = new Transform(position);
-        TankEntity tankEntity = new TankEntity(tankTransform);
-        TankGameObject gameObject = new TankGameObject(tankEntity, tankTexture);
-
+        Transform transform = new Transform(position);
+        TankGameObject gameObject = this.entityFabric.createTank(transform, pathToTexture);
         this.levelTanks.addTank(gameObject);
         return this;
     }
 
     @Override
     public ILevelBuilder addPlayer(GridPoint2 position, String pathToTexture) {
-        ModelTexture playerTexture = new ModelTexture(pathToTexture);
-        Transform playerTransform = new Transform(position);
-        TankEntity playerEntity = new TankEntity(playerTransform);
-        TankGameObject gameObject = new TankGameObject(playerEntity, playerTexture);
-
-        this.player = gameObject;
+        Transform transform = new Transform(position);
+        this.player = this.entityFabric.createTank(transform, pathToTexture);
         return this;
     }
 
     @Override
     public ILevelBuilder setHeight(int height) {
         this.height = height;
-
         return this;
     }
 
     @Override
     public ILevelBuilder setWidth(int width) {
         this.width = width;
-
         return this;
     }
 
@@ -77,7 +66,6 @@ public class LevelBuilder implements ILevelBuilder {
     @Override
     public Level create() {
         LevelSize levelSize = new LevelSize(width, height, 0, 0);
-
         Level level = new Level(levelObstacle, levelTanks, levelBullet, player, levelSize);
 
         this.clear();
@@ -86,7 +74,7 @@ public class LevelBuilder implements ILevelBuilder {
 
     @Override
     public void clear() {
-        this.levelTanks = new LevelLevelTanks();
+        this.levelTanks = new DefaultLevelTanks();
         this.levelObstacle = new LevelObstacle();
         this.levelBullet = new LevelBullet();
     }

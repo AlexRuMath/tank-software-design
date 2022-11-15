@@ -1,7 +1,11 @@
 package ru.mipt.bit.platformer.level;
 
 import com.badlogic.gdx.math.Rectangle;
+import ru.mipt.bit.platformer.entity.interfaces.IGameEntity;
+import ru.mipt.bit.platformer.entity.interfaces.IGun;
 import ru.mipt.bit.platformer.entity.interfaces.IMoveEntity;
+import ru.mipt.bit.platformer.entity.interfaces.IMoveablePart;
+import ru.mipt.bit.platformer.gameobjects.interfaces.IDynamicObject;
 import ru.mipt.bit.platformer.gameobjects.interfaces.IGameObject;
 import ru.mipt.bit.platformer.gameobjects.TankGameObject;
 import ru.mipt.bit.platformer.level.dto.ILevelObstacle;
@@ -20,9 +24,6 @@ public class Level {
 
     public LevelSize levelSize;
 
-    public int height;
-    public int width;
-
     public Level(ILevelObstacle levelObstacle,
                  ILevelTanks levelTanks,
                  LevelBullet levelBullet,
@@ -37,42 +38,36 @@ public class Level {
 
     public void dispose() {
         for (IGameObject gameObject : levelObstacle.getGameObjects()) {
-            gameObject.getModelTexture().texture.dispose();
+            gameObject.disposeTexture();
         }
         for (IGameObject gameObject : levelObstacle.getGameObjects()) {
-            gameObject.getModelTexture().texture.dispose();
+            gameObject.disposeTexture();
         }
         for (IGameObject gameObject : levelBullets.getGameObjects()) {
-            gameObject.getModelTexture().texture.dispose();
+            gameObject.disposeTexture();
         }
 
-        playerTank.getModelTexture().texture.dispose();
+        playerTank.disposeTexture();
     }
 
-    private void interpolatedPosition(IMoveEntity entity, float deltaTime) {
-        float newProgress = continueProgress(entity.getMovementProgress(), deltaTime, entity.getMovementSpeed());
-        entity.setMovementProgress(newProgress);
-        if (isEqual(entity.getMovementProgress(), 1f)) {
-            entity.setDestinationTransformAsCurrentTransform();
-        }
-    }
+    private void movingObject(IDynamicObject dynamicObject, float deltaTime, LevelRender levelRender) {
+        IMoveablePart movablePart = dynamicObject.getMoveablePart();
+        movablePart.continueProgress(deltaTime);
 
-    private void movingObject(IGameObject gameObject, float deltaTime, LevelRender levelRender) {
-        IMoveEntity moveEntity = (IMoveEntity) gameObject.getEntity();
-        interpolatedPosition(moveEntity, deltaTime);
-
-        Rectangle rectangle = gameObject.getModelTexture().rectangle;
-        levelRender.moveRectangle("Ground", rectangle, moveEntity);
+        Rectangle rectangle = dynamicObject.getModelTexture().rectangle;
+        levelRender.moveRectangle("Ground", rectangle, movablePart);
     }
 
     public void movingObjectsInLevel(float deltaTime, LevelRender levelRender) {
         movingObject(playerTank, deltaTime, levelRender);
+        playerTank.live(deltaTime);
 
-        for (IGameObject tank : levelTanks.getGameObjects()) {
+        for (IDynamicObject tank : levelTanks.getGameObjects()) {
             movingObject(tank, deltaTime, levelRender);
+            tank.live(deltaTime);
         }
 
-        for (IGameObject bullet : levelBullets.getGameObjects()) {
+        for (IDynamicObject bullet : levelBullets.getGameObjects()) {
             movingObject(bullet, deltaTime, levelRender);
         }
     }

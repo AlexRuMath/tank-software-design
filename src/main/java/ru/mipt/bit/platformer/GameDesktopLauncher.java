@@ -65,8 +65,8 @@ public class GameDesktopLauncher implements ApplicationListener {
         levelCollision.addRequest(new TreeCollisionRequest());
         levelCollision.addRequest(new EndLevelCollisionRequest());
 
-        commandGenerators.add(new InputBasedCommandGenerator(level.playerTank.entity, level, levelCollision));
-        commandGenerators.add(new BotBasedCommandGenerator(level.levelTanks.getEntities(), level, levelCollision));
+        commandGenerators.add(new InputBasedCommandGenerator(level.playerTank, level, levelCollision));
+        //commandGenerators.add(new BotBasedCommandGenerator(level.levelTanks.getGameObjects(), level, levelCollision));
         commandGenerators.add(new BulletMovedCommandGenerator(level, levelCollision));
     }
 

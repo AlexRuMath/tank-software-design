@@ -2,6 +2,8 @@ package ru.mipt.bit.platformer.collision;
 
 import com.badlogic.gdx.math.GridPoint2;
 import ru.mipt.bit.platformer.entity.interfaces.IMoveEntity;
+import ru.mipt.bit.platformer.entity.interfaces.IMoveablePart;
+import ru.mipt.bit.platformer.gameobjects.interfaces.IDynamicObject;
 import ru.mipt.bit.platformer.level.Level;
 import ru.mipt.bit.platformer.util.Transform;
 
@@ -19,7 +21,7 @@ public class Collision {
         this.requests.add(request);
     }
 
-    public CollisionResponse sendRequests(IMoveEntity entity, GridPoint2 endPosition, Level level) {
+    public CollisionResponse sendRequests(IDynamicObject entity, GridPoint2 endPosition, Level level) {
         for (CollisionRequest request : requests) {
             CollisionResponse response = request.check(entity, endPosition, level);
             if (response.type != CollisionType.NoCollision) {

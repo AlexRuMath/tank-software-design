@@ -1,16 +1,16 @@
 package ru.mipt.bit.platformer.collision;
 
-import ru.mipt.bit.platformer.entity.BaseEntity;
-import ru.mipt.bit.platformer.entity.interfaces.IMoveEntity;
+import ru.mipt.bit.platformer.gameobjects.interfaces.IDynamicObject;
+import ru.mipt.bit.platformer.gameobjects.interfaces.IGameObject;
 
 public class CollisionResponse {
     public CollisionType type;
-    public IMoveEntity firstObject;
-    public BaseEntity secondObject;
+    public IDynamicObject dynamicObject;
+    public IGameObject collisionObject;
 
-    public CollisionResponse(CollisionType type, IMoveEntity firstObject, BaseEntity secondObject) {
+    public CollisionResponse(CollisionType type, IDynamicObject dynamicObject, IGameObject collisionObject) {
         this.type = type;
-        this.firstObject = firstObject;
-        this.secondObject = secondObject;
+        this.dynamicObject = dynamicObject;
+        this.collisionObject = collisionObject;
     }
 }

@@ -1,9 +1,11 @@
 package ru.mipt.bit.platformer.gameobjects.interfaces;
 
-import ru.mipt.bit.platformer.entity.BaseEntity;
 import ru.mipt.bit.platformer.entity.ModelTexture;
+import ru.mipt.bit.platformer.entity.interfaces.IGameEntity;
 
 public interface IGameObject {
-    BaseEntity getEntity();
+    IGameEntity getGameEntity();
     ModelTexture getModelTexture();
+
+    void disposeTexture();
 }
