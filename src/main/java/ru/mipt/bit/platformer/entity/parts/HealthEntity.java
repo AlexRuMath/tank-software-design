@@ -1,11 +1,13 @@
-package ru.mipt.bit.platformer.entity;
+package ru.mipt.bit.platformer.entity.parts;
 
 import ru.mipt.bit.platformer.entity.interfaces.IHealth;
 
-public class Health implements IHealth {
+public class HealthEntity implements IHealth {
     private int health;
+    private int maxHealth;
 
-    public Health(int health) {
+    public HealthEntity(int health) {
+        this.maxHealth = health;
         this.health = health;
     }
 
@@ -16,8 +18,13 @@ public class Health implements IHealth {
     }
 
     @Override
-    public int getHealth() {
+    public float getHealth() {
         return this.health;
+    }
+
+    @Override
+    public float getMaxHealth() {
+        return this.maxHealth;
     }
 
     @Override

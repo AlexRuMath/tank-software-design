@@ -1,10 +1,12 @@
 package ru.mipt.bit.platformer.gameobjects;
 
-import ru.mipt.bit.platformer.entity.BaseEntity;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import ru.mipt.bit.platformer.entity.ModelTexture;
 import ru.mipt.bit.platformer.entity.TreeEntity;
 import ru.mipt.bit.platformer.entity.interfaces.IGameEntity;
 import ru.mipt.bit.platformer.gameobjects.interfaces.IGameObject;
+
+import static ru.mipt.bit.platformer.util.GdxGameUtils.drawTextureRegionUnscaled;
 
 public class TreeGameObject implements IGameObject {
     public final TreeEntity entity;
@@ -23,6 +25,11 @@ public class TreeGameObject implements IGameObject {
     @Override
     public ModelTexture getModelTexture() {
         return this.texture;
+    }
+
+    @Override
+    public void draw(Batch batch) {
+        drawTextureRegionUnscaled(batch, this);
     }
 
     @Override

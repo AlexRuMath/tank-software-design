@@ -16,6 +16,7 @@ import ru.mipt.bit.platformer.util.TileMovement;
 import ru.mipt.bit.platformer.util.Transform;
 
 import java.util.HashMap;
+import java.util.HashSet;
 
 import static ru.mipt.bit.platformer.util.GdxGameUtils.*;
 
@@ -66,29 +67,10 @@ public class LevelRender {
         this.mapMovements.get(nameLayer).moveRectangleBetweenTileCenters(rectangle, movablePart);
     }
 
-    public void renderLevelObject(Level level, Batch batch){
-        drawModel(level.playerTank, batch);
-
-        for (IGameObject gameObject : level.levelBullets.getGameObjects()) {
-            drawModel(gameObject, batch);
+    public void renderLevelObject(HashSet<IGameObject> objects, Batch batch){
+        for (IGameObject gameObject : objects){
+            gameObject.draw(batch);
         }
-
-        for (IGameObject gameObject : level.levelObstacle.getGameObjects()) {
-            drawModel(gameObject, batch);
-        }
-
-        for (IGameObject gameObject : level.levelTanks.getGameObjects()) {
-            drawModel(gameObject, batch);
-        }
-    }
-
-    private void drawModel(IGameObject gameObject, Batch batch) {
-        ModelTexture texture = gameObject.getModelTexture();
-        Transform transform = gameObject.getGameEntity().getTransform();
-
-        drawTextureRegionUnscaled(batch, texture.textureRegion,
-                                         texture.rectangle,
-                                         transform.rotation);
     }
 
     public void dispose(){

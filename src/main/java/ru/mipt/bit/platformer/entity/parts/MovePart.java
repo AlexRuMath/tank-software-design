@@ -5,13 +5,13 @@ import ru.mipt.bit.platformer.util.Transform;
 
 import static com.badlogic.gdx.math.MathUtils.isEqual;
 
-public class DefaultMovePart implements IMoveablePart {
+public class MovePart implements IMoveablePart {
     private float speed;
     private float progress;
     private Transform destinationPos;
     private Transform currentPos;
 
-    public DefaultMovePart(float speed, float progress, Transform destinationPos, Transform currentPos) {
+    public MovePart(float speed, float progress, Transform destinationPos, Transform currentPos) {
         this.speed = speed;
         this.progress = progress;
         this.destinationPos = destinationPos;

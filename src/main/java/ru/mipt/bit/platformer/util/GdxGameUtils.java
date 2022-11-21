@@ -12,6 +12,8 @@ import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.GridPoint2;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+import ru.mipt.bit.platformer.entity.ModelTexture;
+import ru.mipt.bit.platformer.gameobjects.interfaces.IGameObject;
 
 import java.util.NoSuchElementException;
 
@@ -75,7 +77,13 @@ public final class GdxGameUtils {
         return new GridPoint2(point).add(1, 0);
     }
 
-    public static void drawTextureRegionUnscaled(Batch batch, TextureRegion region, Rectangle rectangle, float rotation) {
+    public static void drawTextureRegionUnscaled(Batch batch, IGameObject gameObject) {
+        ModelTexture texture = gameObject.getModelTexture();
+        float rotation = gameObject.getGameEntity().getTransform().rotation;
+
+        TextureRegion region = texture.textureRegion;
+        Rectangle rectangle = texture.rectangle;
+
         int regionWidth = region.getRegionWidth();
         int regionHeight = region.getRegionHeight();
         float regionOriginX = regionWidth / 2f;

@@ -10,6 +10,8 @@ import ru.mipt.bit.platformer.entity.interfaces.IMoveablePart;
 import ru.mipt.bit.platformer.gameobjects.TankGameObject;
 import ru.mipt.bit.platformer.gameobjects.interfaces.IDynamicObject;
 import ru.mipt.bit.platformer.level.Level;
+import ru.mipt.bit.platformer.states.IState;
+import ru.mipt.bit.platformer.states.StateTransfer;
 import ru.mipt.bit.platformer.util.Transform;
 
 import static com.badlogic.gdx.math.MathUtils.isEqual;
@@ -46,6 +48,9 @@ public class MoveBulletCommand implements ICommand {
             TankGameObject enemyTank = (TankGameObject) response.collisionObject;
             int damage = -bulletEntity.getGun().getDamage();
             enemyTank.getHealth().updateHealth(damage);
+
+            IState newState = StateTransfer.generateState(enemyTank.getHealth());
+            enemyTank.entity.setState(newState);
 
             if(!enemyTank.getHealth().isLive()) level.levelTanks.removeTank(enemyTank);
         }

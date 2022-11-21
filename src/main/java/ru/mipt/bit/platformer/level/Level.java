@@ -1,9 +1,7 @@
 package ru.mipt.bit.platformer.level;
 
 import com.badlogic.gdx.math.Rectangle;
-import ru.mipt.bit.platformer.entity.interfaces.IGameEntity;
-import ru.mipt.bit.platformer.entity.interfaces.IGun;
-import ru.mipt.bit.platformer.entity.interfaces.IMoveEntity;
+import ru.mipt.bit.platformer.entity.TreeEntity;
 import ru.mipt.bit.platformer.entity.interfaces.IMoveablePart;
 import ru.mipt.bit.platformer.gameobjects.interfaces.IDynamicObject;
 import ru.mipt.bit.platformer.gameobjects.interfaces.IGameObject;
@@ -12,8 +10,9 @@ import ru.mipt.bit.platformer.level.dto.ILevelObstacle;
 import ru.mipt.bit.platformer.level.dto.ILevelTanks;
 import ru.mipt.bit.platformer.level.dto.LevelBullet;
 
+import java.util.HashSet;
+
 import static com.badlogic.gdx.math.MathUtils.isEqual;
-import static ru.mipt.bit.platformer.util.GdxGameUtils.continueProgress;
 
 public class Level {
     public ILevelObstacle levelObstacle;
@@ -37,17 +36,10 @@ public class Level {
     }
 
     public void dispose() {
-        for (IGameObject gameObject : levelObstacle.getGameObjects()) {
+        HashSet<IGameObject> allObjects = this.getAllGameObject();
+        for(IGameObject gameObject : allObjects){
             gameObject.disposeTexture();
         }
-        for (IGameObject gameObject : levelObstacle.getGameObjects()) {
-            gameObject.disposeTexture();
-        }
-        for (IGameObject gameObject : levelBullets.getGameObjects()) {
-            gameObject.disposeTexture();
-        }
-
-        playerTank.disposeTexture();
     }
 
     private void movingObject(IDynamicObject dynamicObject, float deltaTime, LevelRender levelRender) {
@@ -59,16 +51,24 @@ public class Level {
     }
 
     public void movingObjectsInLevel(float deltaTime, LevelRender levelRender) {
-        movingObject(playerTank, deltaTime, levelRender);
-        playerTank.live(deltaTime);
+        HashSet<IGameObject> allObjects = this.getAllGameObject();
+        for(IGameObject gameObject : allObjects){
+            if(gameObject.getGameEntity().getClass() == TreeEntity.class) continue;
 
-        for (IDynamicObject tank : levelTanks.getGameObjects()) {
-            movingObject(tank, deltaTime, levelRender);
-            tank.live(deltaTime);
+            IDynamicObject dynamicObject = ((IDynamicObject) gameObject);
+            movingObject(dynamicObject, deltaTime, levelRender);
+            dynamicObject.live(deltaTime);
         }
+    }
 
-        for (IDynamicObject bullet : levelBullets.getGameObjects()) {
-            movingObject(bullet, deltaTime, levelRender);
-        }
+    public HashSet<IGameObject> getAllGameObject(){
+        HashSet<IGameObject> result = new HashSet<>();
+
+        result.addAll(levelObstacle.getGameObjects());
+        result.addAll(levelBullets.getGameObjects());
+        result.addAll(levelTanks.getGameObjects());
+        result.add(playerTank);
+
+        return result;
     }
 }

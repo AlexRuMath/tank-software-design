@@ -4,12 +4,9 @@ import com.badlogic.gdx.math.GridPoint2;
 import ru.mipt.bit.platformer.collision.CollisionRequest;
 import ru.mipt.bit.platformer.collision.CollisionResponse;
 import ru.mipt.bit.platformer.collision.CollisionType;
-import ru.mipt.bit.platformer.entity.interfaces.IMoveEntity;
-import ru.mipt.bit.platformer.entity.interfaces.IMoveablePart;
 import ru.mipt.bit.platformer.gameobjects.interfaces.IDynamicObject;
 import ru.mipt.bit.platformer.level.Level;
 import ru.mipt.bit.platformer.level.LevelSize;
-import ru.mipt.bit.platformer.util.Transform;
 
 public class EndLevelCollisionRequest implements CollisionRequest {
     @Override

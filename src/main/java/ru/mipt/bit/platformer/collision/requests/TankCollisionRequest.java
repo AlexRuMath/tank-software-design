@@ -14,7 +14,8 @@ import java.util.HashSet;
 public class TankCollisionRequest implements CollisionRequest {
     @Override
     public CollisionResponse check(IDynamicObject object, GridPoint2 endPosition, Level level) {
-        HashSet<IDynamicObject> tanksEntities = level.levelTanks.getGameObjects();
+        HashSet<IDynamicObject> tanksEntities = new HashSet<>(level.levelTanks.getGameObjects());
+        tanksEntities.add(level.playerTank);
         for(IDynamicObject enemyTank: tanksEntities){
             GridPoint2 enemyPos = enemyTank.getMoveablePart().getTransform().position;
             if(endPosition.x == enemyPos.x && endPosition.y == enemyPos.y){

@@ -22,13 +22,13 @@ public class ShootCommand implements ICommand {
 
     @Override
     public void execute() {
-        if(this.owner.getGun().isReload()) return;
+        if(this.owner.getGun().isReload() || !this.owner.getGun().isServiceable()) return;
 
         IMoveablePart moveablePart = this.owner.getMoveablePart();
         IObjectFabric objectFabric = new DefaultObjectFabric();
 
         Transform direction = Transform.fromRotation(moveablePart.getTransform().rotation);
-        Transform position = Transform.valueOf(moveablePart.getTransform());
+        Transform position = direction.stepInTheDirection(Transform.valueOf(moveablePart.getTransform()));
 
         BulletGameObject bulletGameObject = objectFabric
                 .createBullet(position, "images/bulletBlue3_outline.png", this.owner, direction);

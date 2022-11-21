@@ -1,5 +1,6 @@
 package ru.mipt.bit.platformer.gameobjects;
 
+import com.badlogic.gdx.graphics.g2d.Batch;
 import ru.mipt.bit.platformer.entity.BulletEntity;
 import ru.mipt.bit.platformer.entity.ModelTexture;
 import ru.mipt.bit.platformer.entity.interfaces.IGameEntity;
@@ -8,6 +9,8 @@ import ru.mipt.bit.platformer.entity.interfaces.IHealth;
 import ru.mipt.bit.platformer.entity.interfaces.IMoveablePart;
 import ru.mipt.bit.platformer.gameobjects.interfaces.IGameObject;
 import ru.mipt.bit.platformer.gameobjects.interfaces.IDynamicObject;
+
+import static ru.mipt.bit.platformer.util.GdxGameUtils.drawTextureRegionUnscaled;
 
 public class BulletGameObject implements IGameObject, IDynamicObject {
     public final BulletEntity entity;
@@ -26,6 +29,11 @@ public class BulletGameObject implements IGameObject, IDynamicObject {
     @Override
     public ModelTexture getModelTexture() {
         return this.modelTexture;
+    }
+
+    @Override
+    public void draw(Batch batch) {
+        drawTextureRegionUnscaled(batch, this);
     }
 
     @Override

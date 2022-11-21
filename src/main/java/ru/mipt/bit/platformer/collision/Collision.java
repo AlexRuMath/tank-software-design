@@ -1,11 +1,8 @@
 package ru.mipt.bit.platformer.collision;
 
 import com.badlogic.gdx.math.GridPoint2;
-import ru.mipt.bit.platformer.entity.interfaces.IMoveEntity;
-import ru.mipt.bit.platformer.entity.interfaces.IMoveablePart;
 import ru.mipt.bit.platformer.gameobjects.interfaces.IDynamicObject;
 import ru.mipt.bit.platformer.level.Level;
-import ru.mipt.bit.platformer.util.Transform;
 
 import java.util.ArrayList;
 import java.util.List;

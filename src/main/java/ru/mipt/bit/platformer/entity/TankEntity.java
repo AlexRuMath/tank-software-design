@@ -4,17 +4,25 @@ import ru.mipt.bit.platformer.entity.interfaces.IGameEntity;
 import ru.mipt.bit.platformer.entity.interfaces.IGun;
 import ru.mipt.bit.platformer.entity.interfaces.IHealth;
 import ru.mipt.bit.platformer.entity.interfaces.IMoveablePart;
+import ru.mipt.bit.platformer.states.IState;
 import ru.mipt.bit.platformer.util.Transform;
 
-public class TankEntity implements IGameEntity {
+    public class TankEntity implements IGameEntity {
     public final IHealth health;
     public final IMoveablePart movePart;
-    public final IGun gunPart;
+    public final IGun gun;
 
-    public TankEntity(IHealth health, IMoveablePart movePart, IGun gunPart) {
+    private IState currentState;
+
+    public TankEntity(IState initState, IHealth health, IMoveablePart movePart, IGun gun) {
         this.health = health;
         this.movePart = movePart;
-        this.gunPart = gunPart;
+        this.gun = gun;
+        this.currentState = initState;
+    }
+
+    public void setState(IState state){
+        state.configureParameters(this);
     }
 
     @Override

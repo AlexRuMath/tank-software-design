@@ -2,15 +2,18 @@ package ru.mipt.bit.platformer.entity.parts;
 
 import ru.mipt.bit.platformer.entity.interfaces.IGun;
 
-public class DefaultTankGun implements IGun {
+public class TankGun implements IGun {
+    private final int damage;
     private final float reloadTime;
     private float currentReloadTime;
-    private final int damage;
 
-    public DefaultTankGun(int damage, float reloadTime) {
+    public boolean isServiceable;
+
+    public TankGun(int damage, float reloadTime) {
         this.reloadTime = reloadTime;
         this.currentReloadTime = 0f;
         this.damage = damage;
+        this.isServiceable = true;
     }
 
     @Override
@@ -26,6 +29,21 @@ public class DefaultTankGun implements IGun {
     @Override
     public boolean isReload() {
         return currentReloadTime != 0f;
+    }
+
+    @Override
+    public boolean isServiceable() {
+        return this.isServiceable;
+    }
+
+    @Override
+    public void crash() {
+        this.isServiceable = false;
+    }
+
+    @Override
+    public void fix() {
+        this.isServiceable = true;
     }
 
     @Override
