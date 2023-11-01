@@ -12,6 +12,8 @@ import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.GridPoint2;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+import ru.mipt.bit.platformer.entity.ModelTexture;
+import ru.mipt.bit.platformer.gameobjects.interfaces.IGameObject;
 
 import java.util.NoSuchElementException;
 
@@ -47,6 +49,13 @@ public final class GdxGameUtils {
         }
     }
 
+    public static <L extends MapLayer> L getLayerByName(Map map, String name) {
+        MapLayer layer = map.getLayers().get(name);
+
+        if(layer == null) throw new NoSuchElementException("Map has no layer with name: " + name);
+        return (L) layer;
+    }
+
     public static Rectangle moveRectangleAtTileCenter(TiledMapTileLayer tileLayer, Rectangle rectangle, GridPoint2 tileCoordinates) {
         Vector2 tileCenter = calculateTileCenter(tileLayer, tileCoordinates);
         return rectangle.setCenter(tileCenter);
@@ -68,7 +77,13 @@ public final class GdxGameUtils {
         return new GridPoint2(point).add(1, 0);
     }
 
-    public static void drawTextureRegionUnscaled(Batch batch, TextureRegion region, Rectangle rectangle, float rotation) {
+    public static void drawTextureRegionUnscaled(Batch batch, IGameObject gameObject) {
+        ModelTexture texture = gameObject.getModelTexture();
+        float rotation = gameObject.getGameEntity().getTransform().rotation;
+
+        TextureRegion region = texture.textureRegion;
+        Rectangle rectangle = texture.rectangle;
+
         int regionWidth = region.getRegionWidth();
         int regionHeight = region.getRegionHeight();
         float regionOriginX = regionWidth / 2f;

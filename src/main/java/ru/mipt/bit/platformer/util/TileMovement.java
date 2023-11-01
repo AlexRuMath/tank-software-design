@@ -1,9 +1,9 @@
 package ru.mipt.bit.platformer.util;
 
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
-import com.badlogic.gdx.math.GridPoint2;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.Rectangle;
+import ru.mipt.bit.platformer.entity.interfaces.IMoveablePart;
 
 import static ru.mipt.bit.platformer.util.GdxGameUtils.moveRectangleAtTileCenter;
 
@@ -17,17 +17,17 @@ public class TileMovement {
         this.interpolation = interpolation;
     }
 
-    public Rectangle moveRectangleBetweenTileCenters(Rectangle rectangle, GridPoint2 fromTileCoordinates, GridPoint2 toTileCoordinates, float progress) {
-        moveRectangleAtTileCenter(tileLayer, rectangle, fromTileCoordinates);
+    public Rectangle moveRectangleBetweenTileCenters(Rectangle rectangle, IMoveablePart movablePart) {
+        moveRectangleAtTileCenter(tileLayer, rectangle, movablePart.getTransform().position);
         float fromTileBottomLeftX = rectangle.x;
         float fromTileBottomLeftY = rectangle.y;
 
-        moveRectangleAtTileCenter(tileLayer, rectangle, toTileCoordinates);
+        moveRectangleAtTileCenter(tileLayer, rectangle, movablePart.getDestinationTransform().position);
         float toTileBottomLeftX = rectangle.x;
         float toTileBottomLeftY = rectangle.y;
 
-        float intermediateBottomLeftX = interpolation.apply(fromTileBottomLeftX, toTileBottomLeftX, progress);
-        float intermediateBottomLeftY = interpolation.apply(fromTileBottomLeftY, toTileBottomLeftY, progress);
+        float intermediateBottomLeftX = interpolation.apply(fromTileBottomLeftX, toTileBottomLeftX, movablePart.getProgress());
+        float intermediateBottomLeftY = interpolation.apply(fromTileBottomLeftY, toTileBottomLeftY, movablePart.getProgress());
 
         return rectangle
                 .setX(intermediateBottomLeftX)
